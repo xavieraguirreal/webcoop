@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.cooperativaliberte.coop)",
+      "Bash(cd:*)",
+      "Bash(where php:*)",
+      "Bash(cmd.exe /c \"where php\" 2>&1 && cmd.exe /c \"where composer\" 2>&1)",
+      "Read(//c/xampp/php/**)",
+      "Read(//c/laragon/bin/**)",
+      "Read(//c/Program Files/PHP/**)",
+      "Read(//c/php/**)",
+      "Read(//c//**)",
+      "Bash(ls:*)",
+      "Bash(export:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)"
+    ]
+  }
+}
