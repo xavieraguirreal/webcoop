@@ -6,6 +6,42 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Segoe UI', 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'DM Serif Display', ui-serif, Georgia, serif;
+
+    --color-primary-50: #eff3ff;
+    --color-primary-100: #dbe5fe;
+    --color-primary-200: #bfcefe;
+    --color-primary-300: #93aefe;
+    --color-primary-400: #5f82fb;
+    --color-primary-500: #1e3a8a;
+    --color-primary-600: #1a3278;
+    --color-primary-700: #162a66;
+    --color-primary-800: #122254;
+    --color-primary-900: #0e1a42;
+
+    --color-accent-50: #ecfdf5;
+    --color-accent-100: #d1fae5;
+    --color-accent-200: #a7f3d0;
+    --color-accent-300: #6ee7b7;
+    --color-accent-400: #34d399;
+    --color-accent-500: #10b981;
+    --color-accent-600: #059669;
+    --color-accent-700: #047857;
+    --color-accent-800: #065f46;
+    --color-accent-900: #064e3b;
+
+    --color-dark: #1f2937;
+    --color-cream: #f3f4f6;
+}
+
+/* Animaciones al scroll */
+.animar {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.animar.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
