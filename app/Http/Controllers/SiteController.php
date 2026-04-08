@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
-use App\Models\Story;
 use App\Models\Page;
 use App\Models\WorkArea;
 
@@ -52,18 +51,6 @@ class SiteController extends Controller
         $categories = \App\Models\Category::withCount('news')->get();
 
         return view('site.news.index', compact('news', 'category', 'categories'))->with('featured', null);
-    }
-
-    public function storiesIndex()
-    {
-        $stories = Story::published()->with('tags')->latest('published_at')->paginate(12);
-        return view('site.stories.index', compact('stories'));
-    }
-
-    public function storyShow($slug)
-    {
-        $story = Story::where('slug', $slug)->where('status', 'published')->with('tags')->firstOrFail();
-        return view('site.stories.show', compact('story'));
     }
 
     public function workAreas()

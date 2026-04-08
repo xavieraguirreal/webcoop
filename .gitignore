@@ -18,6 +18,8 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/*.sql
+/storage/joomla-dumps/
 /vendor
 Homestead.json
 Homestead.yaml

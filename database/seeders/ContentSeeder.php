@@ -5,8 +5,6 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\News;
 use App\Models\Page;
-use App\Models\Story;
-use App\Models\Tag;
 use App\Models\WorkArea;
 use Illuminate\Database\Seeder;
 
@@ -18,11 +16,6 @@ class ContentSeeder extends Seeder
         $general = Category::create(['name' => 'General', 'slug' => 'general', 'sort_order' => 1]);
         $talleres = Category::create(['name' => 'Talleres', 'slug' => 'talleres', 'sort_order' => 2]);
         $cooperativa = Category::create(['name' => 'Cooperativa', 'slug' => 'cooperativa', 'sort_order' => 3]);
-
-        // === ETIQUETAS (para relatos) ===
-        $tallerLiterario = Tag::create(['name' => 'Taller Literario', 'slug' => 'taller-literario']);
-        $mentesEnJaque = Tag::create(['name' => 'Mentes en Jaque', 'slug' => 'mentes-en-jaque']);
-        $melodias = Tag::create(['name' => 'Melodías de Revolución', 'slug' => 'melodias-de-revolucion']);
 
         // === ÁREAS DE TRABAJO ===
         WorkArea::create([
@@ -211,39 +204,5 @@ class ContentSeeder extends Seeder
             'published_at' => '2025-11-10 10:00:00',
         ]);
 
-        // === RELATOS (migrados) ===
-        $story1 = Story::create([
-            'title' => 'Ando Ganas: La Nostalgia Hecha Canción',
-            'slug' => 'ando-ganas-la-nostalgia-hecha-cancion',
-            'excerpt' => 'Un relato musical que recorre la nostalgia, los anhelos y las ganas de seguir adelante. Las letras que nacen detrás de los muros también cantan libertad.',
-            'body' => '<p>Hay canciones que nacen de la necesidad de decir lo que las palabras solas no alcanzan. "Ando Ganas" es una de esas canciones. Nació en un taller, entre acordes improvisados y versos que fueron saliendo como el agua de una canilla que alguien olvidó cerrar.</p>
-
-<p>La nostalgia tiene un sonido particular cuando se la escucha desde adentro. No es melancolía vacía, es un motor. Es la fuerza que empuja a crear, a imaginar, a proyectar. Cada nota de esta canción lleva un pedazo de historia compartida.</p>
-
-<p>Ando ganas de ver el mar otra vez. Ando ganas de caminar sin rumbo por una calle cualquiera. Ando ganas de cocinar para mi vieja y verla sonreír. Ando ganas, y esas ganas son las que me mantienen de pie.</p>
-
-<p>La música en Liberté no es un pasatiempo. Es una forma de resistencia, de expresión y de conexión con el mundo de afuera. Cada melodía que se compone acá adentro es un puente invisible que cruza muros y llega adonde tiene que llegar.</p>',
-            'author' => 'Taller Literario Liberté',
-            'status' => 'published',
-            'published_at' => '2025-02-01 10:00:00',
-        ]);
-        $story1->tags()->attach([$melodias->id, $tallerLiterario->id]);
-
-        $story2 = Story::create([
-            'title' => 'Lisa Lane: La Dama que Desafió al Patriarcado Ajedrecista',
-            'slug' => 'lisa-lane-la-dama-que-desafio-al-patriarcado-ajedrecista',
-            'excerpt' => 'La historia de Lisa Lane, campeona de ajedrez que rompió moldes en un mundo dominado por hombres. Un relato que inspira desde el tablero.',
-            'body' => '<p>En los años 60, cuando el ajedrez era un territorio casi exclusivamente masculino, una mujer se sentó frente al tablero y decidió que las reglas del juego no iban a definir las reglas de su vida.</p>
-
-<p>Lisa Lane fue campeona de ajedrez de Estados Unidos en 1959. Pero su historia va mucho más allá de los títulos. Fue una mujer que desafió convenciones, que se negó a aceptar que el talento tuviera género, que demostró con cada partida que la inteligencia no distingue entre hombres y mujeres.</p>
-
-<p>En Liberté, el ajedrez es mucho más que un juego. Es una herramienta de pensamiento estratégico, de paciencia, de análisis. El programa "Mentes en Jaque" utiliza el ajedrez como puerta de entrada a habilidades que trascienden el tablero.</p>
-
-<p>Lisa Lane nos enseña que cada movimiento cuenta, que la estrategia es clave, y que no hay barrera que un buen jugador no pueda superar. Su legado resuena en cada partida que se juega en los talleres de la cooperativa.</p>',
-            'author' => 'Mentes en Jaque - Liberté',
-            'status' => 'published',
-            'published_at' => '2025-01-30 10:00:00',
-        ]);
-        $story2->tags()->attach([$mentesEnJaque->id]);
     }
 }

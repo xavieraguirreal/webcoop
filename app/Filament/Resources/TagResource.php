@@ -44,9 +44,6 @@ class TagResource extends Resource
                     ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug'),
-                Tables\Columns\TextColumn::make('stories_count')
-                    ->label('Relatos')
-                    ->counts('stories'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

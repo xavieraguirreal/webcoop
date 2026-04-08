@@ -114,6 +114,21 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'joomla_legacy' => [
+            'driver' => 'mysql',
+            'host' => env('JOOMLA_DB_HOST', '127.0.0.1'),
+            'port' => env('JOOMLA_DB_PORT', '3306'),
+            'database' => env('JOOMLA_DB_DATABASE', 'coop_joomla_legacy'),
+            'username' => env('JOOMLA_DB_USERNAME', 'root'),
+            'password' => env('JOOMLA_DB_PASSWORD', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => env('JOOMLA_DB_PREFIX', 'js4ox_'),
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+        ],
+
     ],
 
     /*

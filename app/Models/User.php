@@ -15,6 +15,7 @@ class User extends Authenticatable implements FilamentUser
     use HasFactory, Notifiable;
 
     protected $fillable = [
+        'joomla_id',
         'name',
         'email',
         'password',

@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class News extends Model
 {
     protected $fillable = [
-        'title', 'slug', 'excerpt', 'body', 'featured_image',
+        'joomla_id', 'title', 'slug', 'excerpt', 'body', 'featured_image',
         'category_id', 'user_id', 'status', 'published_at',
         'meta_title', 'meta_description', 'post_to_instagram',
-        'instagram_post_id', 'is_featured',
+        'instagram_post_id', 'is_featured', 'language',
     ];
 
     protected function casts(): array

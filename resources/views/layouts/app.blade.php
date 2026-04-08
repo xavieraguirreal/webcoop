@@ -30,7 +30,6 @@
                 <a href="{{ route('page', 'quienes-somos') }}" class="font-medium transition hover:text-accent-500">Nosotros</a>
                 <a href="{{ route('work-areas') }}" class="font-medium transition hover:text-accent-500 {{ request()->routeIs('work-areas*', 'work-area*') ? 'text-accent-500' : '' }}">Áreas de Trabajo</a>
                 <a href="{{ route('news.index') }}" class="font-medium transition hover:text-accent-500 {{ request()->routeIs('news*') ? 'text-accent-500' : '' }}">Noticias</a>
-                <a href="{{ route('stories.index') }}" class="font-medium transition hover:text-accent-500 {{ request()->routeIs('stories*') ? 'text-accent-500' : '' }}">Relatos</a>
                 <a href="{{ route('contact') }}" class="font-medium transition hover:text-accent-500 {{ request()->routeIs('contact') ? 'text-accent-500' : '' }}">Contacto</a>
             </nav>
 
@@ -48,7 +47,6 @@
                 <a href="{{ route('page', 'quienes-somos') }}" class="font-medium hover:text-accent-500">Nosotros</a>
                 <a href="{{ route('work-areas') }}" class="font-medium hover:text-accent-500">Áreas de Trabajo</a>
                 <a href="{{ route('news.index') }}" class="font-medium hover:text-accent-500">Noticias</a>
-                <a href="{{ route('stories.index') }}" class="font-medium hover:text-accent-500">Relatos</a>
                 <a href="{{ route('contact') }}" class="font-medium hover:text-accent-500">Contacto</a>
             </div>
         </div>
@@ -83,7 +81,6 @@
                         <li><a href="{{ route('page', 'quienes-somos') }}" class="hover:text-white transition">Nosotros</a></li>
                         <li><a href="{{ route('work-areas') }}" class="hover:text-white transition">Áreas de trabajo</a></li>
                         <li><a href="{{ route('news.index') }}" class="hover:text-white transition">Noticias</a></li>
-                        <li><a href="{{ route('stories.index') }}" class="hover:text-white transition">Relatos</a></li>
                         <li><a href="{{ route('contact') }}" class="hover:text-white transition">Contacto</a></li>
                     </ul>
                 </div>
