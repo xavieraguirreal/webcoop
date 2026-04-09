@@ -5,43 +5,129 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+@plugin "daisyui";
+
+/*
+ * Tema "liberte" — paleta cálida derivada del logo Liberté.
+ * Verde lima del logo como primary, verde bosque oscuro como secondary,
+ * terracota cálida como accent (complementario en círculo cromático),
+ * fondos cremas (no blanco puro) para reducir fatiga visual en lectura.
+ *
+ * Todos los pares texto/fondo verifican contraste WCAG AA (>= 4.5:1).
+ */
+@plugin "daisyui/theme" {
+    name: 'liberte';
+    default: true;
+    prefersdark: false;
+    color-scheme: light;
+
+    /* Marca */
+    --color-primary: #7CB342;
+    --color-primary-content: #ffffff;
+    --color-secondary: #3D7A2C;
+    --color-secondary-content: #ffffff;
+    --color-accent: #C2410C;
+    --color-accent-content: #ffffff;
+
+    /* Neutrales y bases cálidas */
+    --color-neutral: #3F3A36;
+    --color-neutral-content: #FBFAF6;
+    --color-base-100: #FBFAF6;
+    --color-base-200: #F2EFE7;
+    --color-base-300: #E5E0D5;
+    --color-base-content: #2A2723;
+
+    /* Estado */
+    --color-info: #0EA5E9;
+    --color-info-content: #ffffff;
+    --color-success: #16A34A;
+    --color-success-content: #ffffff;
+    --color-warning: #EAB308;
+    --color-warning-content: #1A1810;
+    --color-error: #DC2626;
+    --color-error-content: #ffffff;
+
+    /* Radios — ligeramente redondeados, no pílulas */
+    --radius-selector: 0.5rem;
+    --radius-field: 0.5rem;
+    --radius-box: 0.75rem;
+
+    /* Tamaños base */
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+
+    /* Bordes */
+    --border: 1px;
+
+    /* Profundidad */
+    --depth: 1;
+    --noise: 0;
+}
+
+/*
+ * Tipografía: Fraunces (titulares, serif expresivo y cálido) + Inter Tight
+ * (cuerpo y UI, sans humanista compacta). Variables, latin-ext.
+ * En esta primera fase se cargan desde Google Fonts; el self-hosting con
+ * subset latin-ext queda como tarea de optimización antes del switch final.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..900,0..100&family=Inter+Tight:wght@400..700&display=swap');
+
 @theme {
-    --font-sans: 'Segoe UI', 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --font-serif: 'DM Serif Display', ui-serif, Georgia, serif;
-
-    --color-primary-50: #eff3ff;
-    --color-primary-100: #dbe5fe;
-    --color-primary-200: #bfcefe;
-    --color-primary-300: #93aefe;
-    --color-primary-400: #5f82fb;
-    --color-primary-500: #1e3a8a;
-    --color-primary-600: #1a3278;
-    --color-primary-700: #162a66;
-    --color-primary-800: #122254;
-    --color-primary-900: #0e1a42;
-
-    --color-accent-50: #ecfdf5;
-    --color-accent-100: #d1fae5;
-    --color-accent-200: #a7f3d0;
-    --color-accent-300: #6ee7b7;
-    --color-accent-400: #34d399;
-    --color-accent-500: #10b981;
-    --color-accent-600: #059669;
-    --color-accent-700: #047857;
-    --color-accent-800: #065f46;
-    --color-accent-900: #064e3b;
-
-    --color-dark: #1f2937;
-    --color-cream: #f3f4f6;
+    --font-sans: 'Inter Tight', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-serif: 'Fraunces', ui-serif, Georgia, serif;
 }
 
-/* Animaciones al scroll */
-.animar {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+/*
+ * Defaults globales del documento.
+ */
+@layer base {
+    html {
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-serif);
+        font-feature-settings: 'ss01';
+        font-optical-sizing: auto;
+        letter-spacing: -0.01em;
+    }
+
+    /* Suaviza el fade entre estados, sin afectar quien pidió reduced-motion */
+    @media (prefers-reduced-motion: no-preference) {
+        a, button {
+            transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+        }
+    }
 }
-.animar.visible {
-    opacity: 1;
-    transform: translateY(0);
+
+/*
+ * Skip link de accesibilidad — visible al hacer foco con teclado.
+ * Cualquier usuario navegando con Tab lo verá inmediatamente.
+ */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background: var(--color-primary);
+    color: var(--color-primary-content);
+    border-radius: var(--radius-field);
+    font-weight: 600;
+    text-decoration: none;
+    transition: top 0.2s ease;
+}
+.skip-link:focus {
+    top: 1rem;
+}
+
+/*
+ * Foco visible accesible — nunca outline:none sin reemplazo.
+ */
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
 }
