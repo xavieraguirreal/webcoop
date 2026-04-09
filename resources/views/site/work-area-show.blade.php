@@ -1,28 +1,39 @@
 @extends('layouts.app')
 
-@section('title', $area->name . ' - Áreas de trabajo - CooperativaLiberté')
+@section('title', $area->name . ' — Áreas de Trabajo — Cooperativa Liberté')
 
 @section('content')
 
-    <div class="bg-dark text-white py-16 px-[5%] text-center border-b-[5px] border-accent-500">
-        <h1 class="text-[2.5rem] font-bold mb-2">{{ $area->name }}</h1>
+    {{-- Page header --}}
+    <section class="bg-secondary text-secondary-content py-16 px-6 text-center">
+        <h1 class="text-4xl lg:text-5xl font-serif font-bold mb-3">{{ $area->name }}</h1>
         @if($area->short_description)
-            <p class="text-lg opacity-80">{{ $area->short_description }}</p>
+            <p class="text-lg opacity-80 max-w-xl mx-auto">{{ $area->short_description }}</p>
         @endif
-    </div>
+    </section>
 
-    <section class="py-16 px-[5%]">
-        <a href="{{ route('work-areas') }}" class="inline-block mb-8 border-2 border-accent-500 text-accent-500 font-bold px-6 py-2 rounded-md hover:bg-accent-500 hover:text-white transition">&larr; Volver a Áreas</a>
+    <article class="py-12 px-6 lg:px-8 bg-base-100">
+        <div class="max-w-3xl mx-auto">
 
-        <div class="max-w-[800px] mx-auto bg-white p-8 lg:p-12 rounded-lg shadow-sm">
+            <a href="{{ route('work-areas') }}" class="btn btn-ghost btn-sm mb-8 gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                Volver a Áreas
+            </a>
+
             @if($area->featured_image)
-                <img src="{{ asset('storage/' . $area->featured_image) }}" alt="{{ $area->name }}" class="w-full h-[350px] object-cover rounded-lg mb-8">
+                <figure class="rounded-box overflow-hidden mb-8 shadow-md">
+                    <img src="{{ asset('storage/' . $area->featured_image) }}" alt="{{ $area->name }}"
+                         class="w-full h-auto max-h-[400px] object-cover">
+                </figure>
             @endif
 
-            <div class="prose prose-lg max-w-none prose-headings:text-primary-500 prose-headings:font-bold text-lg leading-relaxed">
+            <div class="prose prose-lg max-w-none
+                        prose-headings:font-serif prose-headings:text-secondary prose-headings:font-bold
+                        prose-a:text-primary hover:prose-a:underline
+                        text-base-content/80 leading-relaxed">
                 {!! $area->description !!}
             </div>
         </div>
-    </section>
+    </article>
 
 @endsection

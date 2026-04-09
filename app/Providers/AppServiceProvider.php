@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Fechas en español (Carbon)
+        \Carbon\Carbon::setLocale('es');
     }
 }

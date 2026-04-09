@@ -131,3 +131,132 @@
     outline-offset: 2px;
     border-radius: 2px;
 }
+
+/*
+ * Scroll-in animations. El observer en el layout agrega .visible cuando
+ * el elemento entra al viewport. Respeta prefers-reduced-motion.
+ */
+@media (prefers-reduced-motion: no-preference) {
+    .animar {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+    .animar.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Variante: fade desde la izquierda */
+    .animar-left {
+        opacity: 0;
+        transform: translateX(-30px);
+        transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+    .animar-left.visible {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* Variante: scale up */
+    .animar-scale {
+        opacity: 0;
+        transform: scale(0.92);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .animar-scale.visible {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .animar, .animar-left, .animar-scale {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Ken Burns ahora controlado por inline styles + Alpine (ver home hero). */
+
+/*
+ * Hero text boxes — estilo InsightFX: cada línea con fondo inline.
+ * box-decoration-break:clone hace que cada línea de texto partida
+ * tenga su propia caja con padding y fondo independiente.
+ */
+.hero-text-box {
+    padding: 0.25em 0.7em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    line-height: 1.6;
+}
+.hero-text-box--accent {
+    background: var(--color-accent);
+}
+.hero-text-box--dark {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+/*
+ * Hero text entrance/exit animations.
+ * Cada línea entra desde la izquierda con rotación y sale hacia la derecha.
+ */
+@media (prefers-reduced-motion: no-preference) {
+    .hero-line {
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease;
+    }
+    .hero-line--hidden {
+        opacity: 0;
+        transform: translateX(-200px) rotate(-6deg) scale(0.9);
+    }
+    .hero-line--visible {
+        opacity: 1;
+        transform: translateX(0) rotate(0deg) scale(1);
+    }
+    .hero-line--exit {
+        opacity: 0;
+        transform: translateX(150px) rotate(4deg) scale(0.9);
+    }
+
+    /* Stagger: el título entra 250ms después del subtítulo */
+    .hero-line--delay-1 { transition-delay: 0.25s; }
+}
+
+/*
+ * Glow suave al hover en cards interactivas.
+ */
+.card-glow {
+    position: relative;
+    overflow: hidden;
+}
+.card-glow::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, var(--color-primary) 200%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    border-radius: inherit;
+}
+.card-glow:hover::after {
+    opacity: 0.06;
+}
+
+/*
+ * Botón "volver arriba"
+ */
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 40;
+    opacity: 0;
+    transform: translateY(1rem);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+.back-to-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}

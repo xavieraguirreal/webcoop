@@ -19,7 +19,10 @@
     <a href="#contenido-principal" class="skip-link">Saltar al contenido</a>
 
     {{-- HEADER --}}
-    <header class="navbar bg-secondary text-secondary-content sticky top-0 z-50 shadow-md px-4 lg:px-8" x-data="{ open: false }">
+    <header class="navbar sticky top-0 z-50 px-4 lg:px-8 transition-all duration-300"
+            x-data="{ open: false, scrolled: false }"
+            x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 50 })"
+            :class="scrolled ? 'bg-secondary text-secondary-content shadow-lg' : 'bg-secondary/90 text-secondary-content shadow-md'">
         <div class="navbar-start">
             <a href="{{ route('home') }}" class="flex items-center gap-3 text-xl font-bold tracking-wide" aria-label="Inicio - Cooperativa Liberté">
                 @if(file_exists(public_path('images/logo-liberte.png')))
@@ -124,17 +127,48 @@
         </div>
     </footer>
 
-    {{-- Scroll animation observer --}}
+    {{-- Back to top --}}
+    <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
+            class="back-to-top btn btn-circle btn-primary shadow-lg"
+            id="backToTop"
+            aria-label="Volver arriba">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+    </button>
+
+    {{-- Scroll animations + back-to-top visibility --}}
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Scroll-in animations con stagger automático
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+                    // Stagger: si el elemento tiene data-delay, esperar ese tiempo
+                    const delay = entry.target.dataset.delay || 0;
+                    setTimeout(() => entry.target.classList.add('visible'), delay);
+                    observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
-        document.querySelectorAll('.animar').forEach(el => observer.observe(el));
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.animar, .animar-left, .animar-scale').forEach((el, i) => {
+            // Auto-stagger para siblings (cards en un grid)
+            if (!el.dataset.delay && el.parentElement) {
+                const siblings = Array.from(el.parentElement.children).filter(
+                    c => c.classList.contains('animar') || c.classList.contains('animar-scale')
+                );
+                const idx = siblings.indexOf(el);
+                if (idx > 0) el.dataset.delay = idx * 120;
+            }
+            observer.observe(el);
+        });
+
+        // Back to top visibility
+        const btn = document.getElementById('backToTop');
+        if (btn) {
+            window.addEventListener('scroll', () => {
+                btn.classList.toggle('visible', window.scrollY > 400);
+            }, { passive: true });
+        }
     });
     </script>
 
