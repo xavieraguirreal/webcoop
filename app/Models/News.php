@@ -2,10 +2,21 @@
 
 namespace App\Models;
 
+use App\Services\WatermarkService;
 use Illuminate\Database\Eloquent\Model;
 
 class News extends Model
 {
+    protected static function booted(): void
+    {
+        // Aplicar watermark automáticamente cuando se sube una imagen nueva
+        static::saved(function (News $news) {
+            if ($news->wasChanged('featured_image') && $news->featured_image && !str_starts_with($news->featured_image, 'news-images/')) {
+                WatermarkService::apply($news->featured_image);
+            }
+        });
+    }
+
     protected $fillable = [
         'joomla_id', 'title', 'slug', 'excerpt', 'body', 'featured_image',
         'category_id', 'user_id', 'status', 'published_at',

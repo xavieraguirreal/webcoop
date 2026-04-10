@@ -17,7 +17,8 @@ class AddWatermark extends Command
                             {--force : Re-procesar incluso las que ya tienen marca de agua}
                             {--size=15 : Porcentaje del ancho de la imagen que ocupa el watermark}
                             {--opacity=30 : Opacidad del watermark (0-100)}
-                            {--dir=news-images : Directorio dentro de storage/app/public/ a procesar}';
+                            {--dir=news-images : Directorio dentro de storage/app/public/ a procesar}
+                            {--all : Procesar TODOS los directorios de imágenes (news-images + hero)}';
 
     protected $description = 'Agrega marca de agua (gaviota) a las imágenes del storage.';
 
@@ -33,40 +34,61 @@ class AddWatermark extends Command
             return self::FAILURE;
         }
 
-        $dir = $this->option('dir');
         $force = (bool) $this->option('force');
         $sizePct = (int) $this->option('size');
         $opacity = (int) $this->option('opacity');
+        $all = (bool) $this->option('all');
 
-        $storagePath = storage_path('app/public/' . $dir);
-        if (!is_dir($storagePath)) {
-            $this->error("Directorio no encontrado: {$storagePath}");
-            return self::FAILURE;
+        // Directorios a procesar
+        $dirs = [];
+        if ($all) {
+            $dirs[] = storage_path('app/public/news-images');
+            $dirs[] = public_path('images/hero');
+        } else {
+            $dirs[] = storage_path('app/public/' . $this->option('dir'));
         }
 
-        // Archivo de tracking para saber cuáles ya procesamos
+        foreach ($dirs as $storagePath) {
+            if (!is_dir($storagePath)) {
+                $this->warn("Directorio no encontrado: {$storagePath} — saltando.");
+                continue;
+            }
+            $this->info("\nProcesando: {$storagePath}");
+            $this->processDirectory($storagePath, $watermarkPath, $force, $sizePct, $opacity);
+        }
+
+        $this->newLine();
+        $this->table(['Métrica', 'Valor'], [
+            ['Procesadas', $this->processed],
+            ['Ya tenían watermark', $this->skipped],
+            ['Fallidas', $this->failed],
+        ]);
+
+        return self::SUCCESS;
+    }
+
+    private function processDirectory(string $storagePath, string $watermarkPath, bool $force, int $sizePct, int $opacity): void
+    {
         $trackingFile = $storagePath . '/.watermarked';
         $alreadyDone = [];
         if (!$force && file_exists($trackingFile)) {
             $alreadyDone = array_filter(explode("\n", file_get_contents($trackingFile)));
         }
 
-        // Cargar watermark una sola vez
         $watermark = imagecreatefrompng($watermarkPath);
         if (!$watermark) {
             $this->error('No se pudo cargar el PNG del watermark.');
-            return self::FAILURE;
+            return;
         }
         imagealphablending($watermark, true);
         imagesavealpha($watermark, true);
         $wmWidth = imagesx($watermark);
         $wmHeight = imagesy($watermark);
 
-        // Buscar todas las imágenes
         $files = glob($storagePath . '/*.{jpg,jpeg,png,webp}', GLOB_BRACE);
         $total = count($files);
 
-        $this->info("Procesando {$total} imágenes en {$dir}/ (watermark {$sizePct}%, opacidad {$opacity}%)...");
+        $this->info("{$total} imágenes (watermark {$sizePct}%, opacidad {$opacity}%)");
         $bar = $this->output->createProgressBar($total);
         $bar->start();
 
@@ -95,22 +117,13 @@ class AddWatermark extends Command
         }
 
         $bar->finish();
-        $this->newLine(2);
+        $this->newLine();
 
-        // Actualizar tracking
         if (!empty($newlyDone)) {
             file_put_contents($trackingFile, implode("\n", array_merge($alreadyDone, $newlyDone)) . "\n");
         }
 
         imagedestroy($watermark);
-
-        $this->table(['Métrica', 'Valor'], [
-            ['Procesadas', $this->processed],
-            ['Ya tenían watermark', $this->skipped],
-            ['Fallidas', $this->failed],
-        ]);
-
-        return self::SUCCESS;
     }
 
     private function applyWatermark(string $filePath, $watermark, int $wmWidth, int $wmHeight, int $sizePct, int $opacity): void
@@ -144,19 +157,29 @@ class AddWatermark extends Command
         imagefill($resizedWm, 0, 0, $transparent);
         imagecopyresampled($resizedWm, $watermark, 0, 0, 0, 0, $targetWmWidth, $targetWmHeight, $wmWidth, $wmHeight);
 
-        // Aplicar opacidad al watermark
-        if ($opacity < 100) {
-            $this->setImageOpacity($resizedWm, $opacity / 100);
-        }
-
         // Posición: esquina inferior derecha con margen del 3%
         $margin = (int) ($imgWidth * 0.03);
         $destX = $imgWidth - $targetWmWidth - $margin;
         $destY = $imgHeight - $targetWmHeight - $margin;
 
-        // Merge watermark sobre la imagen
+        // Merge watermark sobre la imagen con opacidad
         imagealphablending($image, true);
-        imagecopy($image, $resizedWm, $destX, $destY, 0, 0, $targetWmWidth, $targetWmHeight);
+
+        if ($opacity >= 100) {
+            // Opacidad completa: copiar directo con alpha
+            imagecopy($image, $resizedWm, $destX, $destY, 0, 0, $targetWmWidth, $targetWmHeight);
+        } else {
+            // Opacidad parcial: usar una capa intermedia
+            $temp = imagecreatetruecolor($targetWmWidth, $targetWmHeight);
+            // Copiar la porción de la imagen destino
+            imagecopy($temp, $image, 0, 0, $destX, $destY, $targetWmWidth, $targetWmHeight);
+            // Sobreponer el watermark con alpha
+            imagealphablending($temp, true);
+            imagecopy($temp, $resizedWm, 0, 0, 0, 0, $targetWmWidth, $targetWmHeight);
+            // Mergear la capa de vuelta con opacidad
+            imagecopymerge($image, $temp, $destX, $destY, 0, 0, $targetWmWidth, $targetWmHeight, $opacity);
+            imagedestroy($temp);
+        }
 
         // Guardar (sobreescribe)
         match ($ext) {
@@ -169,30 +192,4 @@ class AddWatermark extends Command
         imagedestroy($resizedWm);
     }
 
-    /**
-     * Reduce la opacidad de una imagen con canal alpha.
-     */
-    private function setImageOpacity($image, float $opacity): void
-    {
-        $width = imagesx($image);
-        $height = imagesy($image);
-
-        for ($x = 0; $x < $width; $x++) {
-            for ($y = 0; $y < $height; $y++) {
-                $color = imagecolorat($image, $x, $y);
-                $alpha = ($color >> 24) & 0x7F;
-                // Aumentar la transparencia según la opacidad deseada
-                $newAlpha = (int) (127 - ((127 - $alpha) * $opacity));
-                $rgb = $color & 0x00FFFFFF;
-                $newColor = imagecolorallocatealpha(
-                    $image,
-                    ($rgb >> 16) & 0xFF,
-                    ($rgb >> 8) & 0xFF,
-                    $rgb & 0xFF,
-                    $newAlpha
-                );
-                imagesetpixel($image, $x, $y, $newColor);
-            }
-        }
-    }
 }
