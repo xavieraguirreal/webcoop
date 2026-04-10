@@ -16,9 +16,10 @@
 
             {{-- Featured image --}}
             @if($article->featured_image)
-                <figure class="rounded-box overflow-hidden mb-8 shadow-md">
+                <figure class="rounded-box overflow-hidden mb-8 shadow-md cursor-zoom-in"
+                        @click="$dispatch('lightbox', '{{ asset('storage/' . $article->featured_image) }}')">
                     <img src="{{ asset('storage/' . $article->featured_image) }}" alt="{{ $article->title }}"
-                         class="w-full h-auto max-h-[450px] object-cover">
+                         class="w-full h-auto max-h-[450px] object-cover hover:scale-105 transition-transform duration-500">
                 </figure>
             @endif
 

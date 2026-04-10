@@ -78,6 +78,39 @@
 }
 
 /*
+ * Page transitions — fade suave al navegar entre páginas.
+ * Usa View Transitions API (Chrome 111+, degrada graceful en otros).
+ */
+@view-transition {
+    navigation: auto;
+}
+::view-transition-old(root) {
+    animation: fadeOut 0.3s ease forwards;
+}
+::view-transition-new(root) {
+    animation: fadeIn 0.3s ease forwards;
+}
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/*
+ * Stacked cards — rotación alterna + hover levanta la card.
+ */
+.stacked-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.stacked-card:hover {
+    transform: rotate(0deg) translateY(-4px) !important;
+    z-index: 10;
+}
+
+/*
  * Defaults globales del documento.
  */
 @layer base {
@@ -384,4 +417,283 @@
     height: auto;
     margin-top: -1px;
     margin-bottom: -1px;
+}
+
+/*
+ * Glassmorphism — efecto vidrio esmerilado en cards.
+ */
+.glass-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/*
+ * Number flip — morfing de dígitos estilo aeropuerto.
+ */
+.flip-digit {
+    display: inline-block;
+    position: relative;
+    width: 0.65em;
+    height: 1.2em;
+    overflow: hidden;
+    text-align: center;
+}
+.flip-digit-inner {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.flip-digit-char {
+    height: 1.2em;
+    line-height: 1.2em;
+    flex-shrink: 0;
+}
+
+/*
+ * Loading screen — logo animado al cargar la página.
+ */
+.loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-secondary);
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.loading-screen.loaded {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+.loading-screen img {
+    animation: loadingPulse 1.5s ease-in-out infinite;
+}
+@keyframes loadingPulse {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.08); opacity: 1; }
+}
+.loading-bar {
+    width: 120px;
+    height: 3px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    margin-top: 1.5rem;
+    overflow: hidden;
+}
+.loading-bar-fill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 2px;
+    animation: loadingFill 1.2s ease-in-out forwards;
+}
+@keyframes loadingFill {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+/*
+ * Reveal footer — footer fijo, contenido pasa por encima.
+ */
+.reveal-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 0;
+}
+.reveal-footer-spacer {
+    position: relative;
+    z-index: 1;
+}
+
+/*
+ * Highlight on scroll — texto se resalta progresivamente.
+ */
+.highlight-text {
+    background-size: 0% 40%;
+    background-repeat: no-repeat;
+    background-position: 0 85%;
+    background-image: linear-gradient(transparent 60%, rgba(124, 179, 66, 0.25) 60%);
+    transition: background-size 0.8s ease;
+}
+.highlight-text.highlighted {
+    background-size: 100% 40%;
+}
+
+/*
+ * Typing cursor blink.
+ */
+.typing-cursor {
+    display: inline-block;
+    width: 3px;
+    height: 1em;
+    background: var(--color-accent);
+    margin-left: 2px;
+    animation: blink 0.8s infinite;
+    vertical-align: text-bottom;
+}
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/*
+ * Hover magnify — zoom dentro del contenedor al hover.
+ */
+.hover-magnify {
+    overflow: hidden;
+}
+.hover-magnify img {
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hover-magnify:hover img {
+    transform: scale(1.15);
+}
+
+/*
+ * Lightbox — fullscreen image viewer.
+ */
+.lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+}
+.lightbox-overlay img {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: var(--radius-box);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+/*
+ * Before/After slider — comparación de imágenes.
+ */
+.ba-slider {
+    position: relative;
+    overflow: hidden;
+    cursor: ew-resize;
+    border-radius: var(--radius-box);
+}
+.ba-slider img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.ba-slider .ba-after {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+.ba-slider .ba-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    z-index: 5;
+    cursor: ew-resize;
+}
+.ba-slider .ba-handle::after {
+    content: '⟨⟩';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #333;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    letter-spacing: 4px;
+}
+
+/*
+ * Formulario animado — campos aparecen escalonadamente.
+ */
+.form-animated .form-group {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.form-animated .form-group.form-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/*
+ * Timeline vertical animada.
+ */
+.timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--color-base-300);
+    transform: translateX(-50%);
+}
+.timeline-line-fill {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 3px;
+    background: var(--color-primary);
+    transform: translateX(-50%);
+    transition: height 0.3s ease;
+}
+.timeline-item {
+    position: relative;
+    width: 50%;
+    padding: 1.5rem 2.5rem;
+}
+.timeline-item:nth-child(odd) {
+    margin-left: 0;
+    text-align: right;
+    padding-right: 3rem;
+}
+.timeline-item:nth-child(even) {
+    margin-left: 50%;
+    padding-left: 3rem;
+}
+.timeline-dot {
+    position: absolute;
+    top: 2rem;
+    width: 16px;
+    height: 16px;
+    background: var(--color-base-300);
+    border: 3px solid var(--color-base-100);
+    border-radius: 50%;
+    z-index: 2;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+.timeline-dot.active {
+    background: var(--color-primary);
+    transform: scale(1.3);
+}
+.timeline-item:nth-child(odd) .timeline-dot {
+    right: -8px;
+}
+.timeline-item:nth-child(even) .timeline-dot {
+    left: -8px;
+}
+@media (max-width: 768px) {
+    .timeline-line, .timeline-line-fill { left: 1rem; }
+    .timeline-item { width: 100%; margin-left: 0 !important; text-align: left !important; padding-left: 3rem !important; padding-right: 1rem !important; }
+    .timeline-item .timeline-dot { left: 0.5rem !important; right: auto !important; }
 }

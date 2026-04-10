@@ -17,6 +17,12 @@
 </head>
 <body class="bg-base-100 text-base-content font-sans antialiased leading-relaxed min-h-screen flex flex-col">
 
+    {{-- Loading screen --}}
+    <div class="loading-screen" id="loadingScreen">
+        <img src="{{ asset('images/logo-icon.png') }}" alt="" class="w-20 h-20">
+        <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+    </div>
+
     {{-- Scroll progress bar --}}
     <div class="scroll-progress" id="scrollProgress"></div>
 
@@ -70,12 +76,12 @@
     </header>
 
     {{-- CONTENT --}}
-    <main id="contenido-principal" class="flex-1">
+    <main id="contenido-principal" class="flex-1 reveal-footer-spacer bg-base-100">
         @yield('content')
     </main>
 
-    {{-- FOOTER --}}
-    <footer class="bg-neutral text-neutral-content">
+    {{-- FOOTER — reveal: se asoma por debajo del contenido --}}
+    <footer class="bg-neutral text-neutral-content reveal-footer">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
                 {{-- Marca --}}
@@ -129,6 +135,15 @@
         </div>
     </footer>
 
+    {{-- Lightbox --}}
+    <div x-data="{ open: false, src: '' }" @lightbox.window="open = true; src = $event.detail"
+         x-show="open" x-cloak x-transition.opacity
+         @click="open = false" @keydown.escape.window="open = false"
+         class="lightbox-overlay">
+        <img :src="src" alt="">
+        <button class="absolute top-6 right-6 text-white/70 hover:text-white text-3xl" @click="open = false">&times;</button>
+    </div>
+
     {{-- Back to top con % --}}
     <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
             class="back-to-top btn btn-circle btn-primary shadow-lg relative"
@@ -173,6 +188,16 @@
             }
         }, { passive: true });
 
+        // === Loading screen dismiss ===
+        const loader = document.getElementById('loadingScreen');
+        if (loader) {
+            window.addEventListener('load', () => {
+                setTimeout(() => loader.classList.add('loaded'), 800);
+            });
+            // Fallback: si tarda más de 3s, cerrar igual
+            setTimeout(() => loader.classList.add('loaded'), 3000);
+        }
+
         // === Scroll-in animations con stagger ===
         const animObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -206,6 +231,17 @@
         }, { threshold: 0.3 });
 
         document.querySelectorAll('.image-reveal').forEach(el => revealObserver.observe(el));
+
+        // === Highlight on scroll ===
+        const highlightObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('highlighted');
+                    highlightObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('.highlight-text').forEach(el => highlightObserver.observe(el));
 
         // === Tilt 3D on cards ===
         document.querySelectorAll('.tilt-card').forEach(card => {

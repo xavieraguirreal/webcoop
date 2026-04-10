@@ -33,7 +33,43 @@
                         text-base-content/80 leading-relaxed">
                 {!! $area->description !!}
             </div>
+
+            {{-- Before/After slider (se muestra si el área tiene 2 imágenes en el futuro)
+                 Por ahora el componente está listo para usar cuando se cargue contenido.
+                 Uso: agregar un div con clase ba-slider y dos imágenes. --}}
         </div>
     </article>
 
 @endsection
+
+@push('scripts')
+<script>
+// Before/After slider functionality
+document.querySelectorAll('.ba-slider').forEach(slider => {
+    const handle = slider.querySelector('.ba-handle');
+    const after = slider.querySelector('.ba-after');
+    if (!handle || !after) return;
+
+    let dragging = false;
+
+    const move = (x) => {
+        const rect = slider.getBoundingClientRect();
+        let pct = ((x - rect.left) / rect.width) * 100;
+        pct = Math.max(0, Math.min(100, pct));
+        handle.style.left = pct + '%';
+        after.style.clipPath = `inset(0 0 0 ${pct}%)`;
+    };
+
+    handle.addEventListener('mousedown', () => dragging = true);
+    slider.addEventListener('mousemove', (e) => { if (dragging) move(e.clientX); });
+    document.addEventListener('mouseup', () => dragging = false);
+
+    slider.addEventListener('touchstart', (e) => { dragging = true; move(e.touches[0].clientX); }, { passive: true });
+    slider.addEventListener('touchmove', (e) => { if (dragging) move(e.touches[0].clientX); }, { passive: true });
+    document.addEventListener('touchend', () => dragging = false);
+
+    // Initial position
+    move(slider.getBoundingClientRect().left + slider.getBoundingClientRect().width / 2);
+});
+</script>
+@endpush

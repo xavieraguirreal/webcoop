@@ -19,6 +19,12 @@ class SiteController extends Controller
     public function page($slug)
     {
         $page = Page::where('slug', $slug)->where('is_active', true)->firstOrFail();
+
+        // Vista especial para la timeline de historia
+        if ($slug === 'historia') {
+            return view('site.page-historia', compact('page'));
+        }
+
         return view('site.page', compact('page'));
     }
 

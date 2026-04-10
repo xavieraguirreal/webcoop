@@ -120,14 +120,14 @@
     </svg>
 
     {{-- BIENVENIDA + FEATURES --}}
-    <section class="py-20 px-6 lg:px-8 bg-base-100 -mt-1">
-        <div class="max-w-5xl mx-auto text-center">
-            <h2 class="text-4xl font-serif font-bold text-gradient mb-4 animar">Bienvenidos a Liberté</h2>
+    <section class="py-20 px-6 lg:px-8 -mt-1 bg-base-100"
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-4xl font-serif font-bold text-gradient mb-4 animar text-center">Bienvenidos a Liberté</h2>
             <div class="w-16 h-1 bg-primary rounded-full mx-auto mb-8"></div>
-            <p class="text-lg text-base-content/70 max-w-2xl mx-auto mb-14 animar">
-                Nuestra cooperativa es un emprendimiento 100% autogestionado dentro de la
-                Unidad Penal N.° 15 de Batán. Combinamos el talento individual con la fuerza
-                colectiva para producir con calidad y dignidad.
+            <p class="text-lg text-base-content/70 max-w-2xl mx-auto mb-14 animar text-center">
+                Nuestra cooperativa es un emprendimiento <span class="highlight-text">100% autogestionado</span> dentro de la
+                Unidad Penal N.° 15 de Batán. Combinamos el <span class="highlight-text">talento individual</span> con la <span class="highlight-text">fuerza
+                colectiva</span> para producir con calidad y dignidad.
             </p>
         </div>
 
@@ -141,13 +141,13 @@
             @endphp
 
             @foreach($features as $i => $f)
-                <div class="card bg-base-200 shadow-sm hover:shadow-lg transition-shadow animar-scale tilt-card">
+                <div class="group card bg-base-200 border-t-4 border-primary shadow-sm hover:shadow-xl hover:bg-secondary transition-all duration-300 animar-scale tilt-card">
                     <div class="card-body items-center text-center">
-                        <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-2">
-                            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $f['icon'] }}"/></svg>
+                        <div class="w-20 h-20 rounded-full bg-primary/10 group-hover:bg-white/20 flex items-center justify-center mb-3 transition-colors duration-300">
+                            <svg class="w-10 h-10 text-primary group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $f['icon'] }}"/></svg>
                         </div>
-                        <h3 class="card-title text-secondary font-serif text-xl">{{ $f['title'] }}</h3>
-                        <p class="text-base-content/60 text-sm">{{ $f['text'] }}</p>
+                        <h3 class="card-title text-secondary group-hover:text-white font-serif text-xl transition-colors duration-300">{{ $f['title'] }}</h3>
+                        <p class="text-base-content/60 group-hover:text-white/80 text-sm transition-colors duration-300">{{ $f['text'] }}</p>
                     </div>
                 </div>
             @endforeach
@@ -175,13 +175,19 @@
                 @endphp
                 @foreach($statItems as $s)
                     <div class="stat place-items-center"
-                         x-data="{ count: 0, target: {{ $s['value'] }} }"
-                         x-effect="if (shown && count < target) {
-                             let step = Math.max(1, Math.ceil(target / 40));
-                             setTimeout(() => count = Math.min(count + step, target), 30);
-                         }">
-                        <div class="stat-value text-white font-serif text-5xl">
-                            <span x-text="count"></span>{{ $s['suffix'] }}
+                         x-data="flipCounter({{ $s['value'] }}, '{{ $s['suffix'] }}')"
+                         x-effect="if (shown) startFlip()">
+                        <div class="stat-value text-white font-serif text-5xl flex items-center justify-center">
+                            <template x-for="(d, i) in displayDigits" :key="i">
+                                <span class="flip-digit">
+                                    <span class="flip-digit-inner" :style="'transform: translateY(-' + (d * 1.2) + 'em)'">
+                                        <template x-for="n in 10">
+                                            <span class="flip-digit-char" x-text="n - 1"></span>
+                                        </template>
+                                    </span>
+                                </span>
+                            </template>
+                            <span x-text="suffix"></span>
                         </div>
                         <div class="stat-desc text-white/70 text-base font-medium mt-1">{{ $s['label'] }}</div>
                     </div>
@@ -237,30 +243,32 @@
             <p class="text-center text-base-content/50 mb-14 animar">Lo que pasa en la cooperativa.</p>
 
             @if($news->count())
-                <div class="space-y-6">
-                    @foreach($news as $article)
+                {{-- Stacked cards: cada card se desplaza un poco, efecto apilado --}}
+                <div class="relative" style="perspective: 1000px;">
+                    @foreach($news as $i => $article)
                         <a href="{{ route('news.show', $article->slug) }}"
-                           class="flex flex-col sm:flex-row gap-5 bg-base-100 rounded-box p-5 border-l-4 border-primary shadow-sm hover:shadow-md hover:border-accent transition-all duration-200 animar card-glow group">
-                            @if($article->featured_image)
-                                <div class="w-full sm:w-36 h-28 sm:h-auto rounded-lg shrink-0 image-reveal">
-                                    <img src="{{ asset('storage/' . $article->featured_image) }}" alt=""
-                                         class="w-full h-full object-cover rounded-lg" loading="lazy">
-                                </div>
-                            @else
-                                <div class="w-full sm:w-36 h-28 rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 shrink-0"></div>
-                            @endif
-                            <div class="flex-1 min-w-0">
-                                <div class="text-xs font-semibold text-base-content/40 uppercase mb-1">
-                                    {{ $article->published_at?->translatedFormat('d \\d\\e F, Y') }}
-                                    @if($article->category)
-                                        <span class="badge badge-ghost badge-sm ml-1">{{ $article->category->name }}</span>
-                                    @endif
-                                </div>
-                                <h3 class="text-lg font-serif font-bold text-secondary group-hover:text-primary transition-colors line-clamp-2">{{ $article->title }}</h3>
-                                @if($article->excerpt)
-                                    <p class="text-base-content/60 text-sm line-clamp-2 mt-1">{{ $article->excerpt }}</p>
+                           class="stacked-card block bg-base-100 rounded-box p-5 border-l-4 border-primary shadow-md hover:shadow-xl hover:border-accent transition-all duration-300 card-glow group mb-4"
+                           style="transform: rotate({{ $i % 2 === 0 ? '-0.5' : '0.5' }}deg);">
+                            <div class="flex flex-col sm:flex-row gap-5">
+                                @if($article->featured_image)
+                                    <div class="w-full sm:w-40 h-32 sm:h-auto rounded-lg shrink-0 hover-magnify overflow-hidden">
+                                        <img src="{{ asset('storage/' . $article->featured_image) }}" alt=""
+                                             class="w-full h-full object-cover rounded-lg" loading="lazy">
+                                    </div>
                                 @endif
-                                <span class="text-primary font-semibold text-sm mt-2 inline-block">Leer artículo &rarr;</span>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-xs font-semibold text-base-content/40 uppercase mb-1">
+                                        {{ $article->published_at?->translatedFormat('d \\d\\e F, Y') }}
+                                        @if($article->category)
+                                            <span class="badge badge-ghost badge-sm ml-1">{{ $article->category->name }}</span>
+                                        @endif
+                                    </div>
+                                    <h3 class="text-lg font-serif font-bold text-secondary group-hover:text-primary transition-colors line-clamp-2">{{ $article->title }}</h3>
+                                    @if($article->excerpt)
+                                        <p class="text-base-content/60 text-sm line-clamp-2 mt-1">{{ $article->excerpt }}</p>
+                                    @endif
+                                    <span class="text-primary font-semibold text-sm mt-2 inline-block">Leer artículo &rarr;</span>
+                                </div>
                             </div>
                         </a>
                     @endforeach
@@ -279,12 +287,14 @@
     <section class="parallax-bg relative py-28 px-6 text-center text-white"
              style="background-image: url('{{ asset('images/hero/hero-1.jpg') }}');">
         <div class="absolute inset-0 bg-secondary/75"></div>
-        <div class="relative z-10 max-w-3xl mx-auto animar">
+        <div class="relative z-10 max-w-3xl mx-auto animar"
+             x-data="typingEffect('Trabajar por la recuperación de los derechos y la dignidad en las cárceles')"
+             x-intersect.once="startTyping()">
             <svg class="w-10 h-10 text-primary mx-auto mb-6 opacity-60" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
             <blockquote class="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold leading-snug mb-6">
-                Trabajar por la recuperación de los derechos y la dignidad en las cárceles
+                <span x-text="displayText"></span><span class="typing-cursor" x-show="typing"></span>
             </blockquote>
-            <p class="text-white/70 text-lg">Misión de la Cooperativa Liberté</p>
+            <p class="text-white/70 text-lg" x-show="!typing" x-transition>Misión de la Cooperativa Liberté</p>
         </div>
     </section>
 
@@ -312,6 +322,49 @@
 
 @push('scripts')
 <script>
+function flipCounter(target, suffix) {
+    return {
+        target,
+        suffix,
+        displayDigits: Array.from(String(target), () => 0),
+        started: false,
+        startFlip() {
+            if (this.started) return;
+            this.started = true;
+            const targetDigits = String(this.target).split('').map(Number);
+            targetDigits.forEach((digit, i) => {
+                setTimeout(() => {
+                    this.displayDigits[i] = digit;
+                    this.displayDigits = [...this.displayDigits]; // force reactivity
+                }, 300 + (i * 200));
+            });
+        }
+    }
+}
+
+function typingEffect(fullText) {
+    return {
+        fullText,
+        displayText: '',
+        typing: false,
+        startTyping() {
+            if (this.typing || this.displayText.length > 0) return;
+            this.typing = true;
+            let i = 0;
+            const type = () => {
+                if (i <= this.fullText.length) {
+                    this.displayText = this.fullText.slice(0, i);
+                    i++;
+                    setTimeout(type, 40 + Math.random() * 30);
+                } else {
+                    this.typing = false;
+                }
+            };
+            type();
+        }
+    }
+}
+
 function heroSlider() {
     const SLIDE_DURATION = 7000; // ms por slide
     const PROGRESS_INTERVAL = 30; // ms entre updates del progress

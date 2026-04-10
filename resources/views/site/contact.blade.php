@@ -4,7 +4,6 @@
 
 @section('content')
 
-    {{-- Page header --}}
     <section class="bg-secondary text-secondary-content py-16 px-6 text-center">
         <h1 class="text-4xl lg:text-5xl font-serif font-bold mb-3">Contacto</h1>
         <p class="text-lg opacity-80">Ponete en contacto con la cooperativa</p>
@@ -13,9 +12,8 @@
     <section class="py-16 px-6 lg:px-8 bg-base-100">
         <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
 
-            {{-- Info --}}
-            <div>
-                <h2 class="text-2xl font-serif font-bold text-secondary mb-8">Datos de contacto</h2>
+            <div class="animar">
+                <h2 class="text-2xl font-serif font-bold text-gradient mb-8">Datos de contacto</h2>
 
                 <div class="space-y-8">
                     <div>
@@ -48,24 +46,30 @@
                 </div>
             </div>
 
-            {{-- Form --}}
-            <div class="card bg-base-200 shadow-md">
+            {{-- Formulario animado --}}
+            <div class="card bg-base-200 shadow-md animar" x-data="animatedForm()" x-intersect.once="showFields()">
                 <div class="card-body">
-                    <h2 class="card-title text-xl font-serif text-secondary mb-4">Envianos un mensaje</h2>
-                    <form class="space-y-4">
-                        <div class="form-control">
+                    <h2 class="card-title text-xl font-serif text-gradient mb-4">Envianos un mensaje</h2>
+                    <form class="form-animated space-y-4">
+                        <div class="form-group form-control" :class="visibleFields >= 1 ? 'form-visible' : ''">
                             <label class="label"><span class="label-text font-medium">Nombre</span></label>
                             <input type="text" placeholder="Tu nombre" class="input input-bordered w-full" required>
                         </div>
-                        <div class="form-control">
+                        <div class="form-group form-control" :class="visibleFields >= 2 ? 'form-visible' : ''" style="transition-delay: 0.15s">
                             <label class="label"><span class="label-text font-medium">Email</span></label>
                             <input type="email" placeholder="tu@email.com" class="input input-bordered w-full" required>
                         </div>
-                        <div class="form-control">
+                        <div class="form-group form-control" :class="visibleFields >= 3 ? 'form-visible' : ''" style="transition-delay: 0.3s">
+                            <label class="label"><span class="label-text font-medium">Asunto</span></label>
+                            <input type="text" placeholder="Asunto del mensaje" class="input input-bordered w-full">
+                        </div>
+                        <div class="form-group form-control" :class="visibleFields >= 4 ? 'form-visible' : ''" style="transition-delay: 0.45s">
                             <label class="label"><span class="label-text font-medium">Mensaje</span></label>
                             <textarea class="textarea textarea-bordered w-full" rows="5" placeholder="Tu mensaje..." required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-accent w-full">Enviar mensaje</button>
+                        <div class="form-group" :class="visibleFields >= 5 ? 'form-visible' : ''" style="transition-delay: 0.6s">
+                            <button type="submit" class="btn btn-accent w-full">Enviar mensaje</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -73,3 +77,22 @@
     </section>
 
 @endsection
+
+@push('scripts')
+<script>
+function animatedForm() {
+    return {
+        visibleFields: 0,
+        showFields() {
+            const show = () => {
+                if (this.visibleFields < 5) {
+                    this.visibleFields++;
+                    setTimeout(show, 150);
+                }
+            };
+            show();
+        }
+    }
+}
+</script>
+@endpush
