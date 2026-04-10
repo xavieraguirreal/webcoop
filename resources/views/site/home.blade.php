@@ -251,7 +251,7 @@
                            style="transform: rotate({{ $i % 2 === 0 ? '-0.5' : '0.5' }}deg);">
                             <div class="flex flex-col sm:flex-row gap-5">
                                 @if($article->featured_image)
-                                    <div class="w-full sm:w-40 h-32 sm:h-auto rounded-lg shrink-0 hover-magnify overflow-hidden">
+                                    <div class="w-full sm:w-40 h-32 sm:h-auto rounded-lg shrink-0 hover-magnify image-reveal overflow-hidden">
                                         <img src="{{ asset('storage/' . $article->featured_image) }}" alt=""
                                              class="w-full h-full object-cover rounded-lg" loading="lazy">
                                     </div>
