@@ -114,10 +114,15 @@
         </div>
     </section>
 
+    {{-- Wave divider hero → bienvenida --}}
+    <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" fill="var(--color-base-100)">
+        <path d="M0,40 C360,80 720,0 1440,40 L1440,60 L0,60 Z"/>
+    </svg>
+
     {{-- BIENVENIDA + FEATURES --}}
-    <section class="py-20 px-6 lg:px-8 bg-base-100">
+    <section class="py-20 px-6 lg:px-8 bg-base-100 -mt-1">
         <div class="max-w-5xl mx-auto text-center">
-            <h2 class="text-4xl font-serif font-bold text-secondary mb-4 animar">Bienvenidos a Liberté</h2>
+            <h2 class="text-4xl font-serif font-bold text-gradient mb-4 animar">Bienvenidos a Liberté</h2>
             <div class="w-16 h-1 bg-primary rounded-full mx-auto mb-8"></div>
             <p class="text-lg text-base-content/70 max-w-2xl mx-auto mb-14 animar">
                 Nuestra cooperativa es un emprendimiento 100% autogestionado dentro de la
@@ -136,7 +141,7 @@
             @endphp
 
             @foreach($features as $i => $f)
-                <div class="card bg-base-200 shadow-sm hover:shadow-md transition-shadow animar-scale">
+                <div class="card bg-base-200 shadow-sm hover:shadow-lg transition-shadow animar-scale tilt-card">
                     <div class="card-body items-center text-center">
                         <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-2">
                             <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $f['icon'] }}"/></svg>
@@ -149,8 +154,13 @@
         </div>
     </section>
 
+    {{-- Wave divider features → stats --}}
+    <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" fill="var(--color-secondary)">
+        <path d="M0,20 C480,60 960,0 1440,30 L1440,60 L0,60 Z"/>
+    </svg>
+
     {{-- STATS con contador animado --}}
-    <section class="py-16 px-6 bg-secondary text-secondary-content animar"
+    <section class="py-16 px-6 bg-secondary text-secondary-content -mt-1 animar"
              x-data="{ shown: false }"
              x-intersect.once="shown = true">
         <div class="max-w-4xl mx-auto">
@@ -180,10 +190,15 @@
         </div>
     </section>
 
+    {{-- Wave divider stats → áreas --}}
+    <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" fill="var(--color-base-100)">
+        <path d="M0,30 C360,60 1080,0 1440,20 L1440,60 L0,60 Z"/>
+    </svg>
+
     {{-- AREAS DE TRABAJO --}}
-    <section class="py-20 px-6 lg:px-8 bg-base-100">
+    <section class="py-20 px-6 lg:px-8 bg-base-100 -mt-1">
         <div class="max-w-5xl mx-auto">
-            <h2 class="text-center text-4xl font-serif font-bold text-secondary mb-4 animar">Áreas de Trabajo</h2>
+            <h2 class="text-center text-4xl font-serif font-bold text-gradient mb-4 animar">Áreas de Trabajo</h2>
             <div class="w-16 h-1 bg-primary rounded-full mx-auto mb-14"></div>
 
             @if($workAreas->count())
@@ -217,7 +232,7 @@
     {{-- ULTIMAS NOTICIAS --}}
     <section class="py-20 px-6 lg:px-8 bg-base-200">
         <div class="max-w-3xl mx-auto">
-            <h2 class="text-center text-4xl font-serif font-bold text-secondary mb-4 animar">Últimas Noticias</h2>
+            <h2 class="text-center text-4xl font-serif font-bold text-gradient mb-4 animar">Últimas Noticias</h2>
             <div class="w-16 h-1 bg-primary rounded-full mx-auto mb-4"></div>
             <p class="text-center text-base-content/50 mb-14 animar">Lo que pasa en la cooperativa.</p>
 
@@ -227,8 +242,10 @@
                         <a href="{{ route('news.show', $article->slug) }}"
                            class="flex flex-col sm:flex-row gap-5 bg-base-100 rounded-box p-5 border-l-4 border-primary shadow-sm hover:shadow-md hover:border-accent transition-all duration-200 animar card-glow group">
                             @if($article->featured_image)
-                                <img src="{{ asset('storage/' . $article->featured_image) }}" alt=""
-                                     class="w-full sm:w-36 h-28 sm:h-auto rounded-lg object-cover shrink-0" loading="lazy">
+                                <div class="w-full sm:w-36 h-28 sm:h-auto rounded-lg shrink-0 image-reveal">
+                                    <img src="{{ asset('storage/' . $article->featured_image) }}" alt=""
+                                         class="w-full h-full object-cover rounded-lg" loading="lazy">
+                                </div>
                             @else
                                 <div class="w-full sm:w-36 h-28 rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 shrink-0"></div>
                             @endif
@@ -258,13 +275,36 @@
         </div>
     </section>
 
-    {{-- ALIANZAS --}}
-    <section class="py-12 px-6 bg-base-100 border-t border-base-300 animar">
-        <h2 class="text-center text-xs font-semibold uppercase tracking-[0.2em] text-base-content/30 mb-8">Alianzas y reconocimientos</h2>
-        <div class="flex flex-wrap items-center justify-center gap-4 md:gap-8 max-w-4xl mx-auto">
-            @foreach(['Procuración Penitenciaria', 'UNMdP', 'INTA', 'Fed. Arg. Cooperativas', 'Víctimas por la Paz'] as $partner)
-                <span class="badge badge-outline badge-lg text-base-content/40 border-base-300 py-4 px-5">{{ $partner }}</span>
-            @endforeach
+    {{-- PARALLAX section — frase inspiradora --}}
+    <section class="parallax-bg relative py-28 px-6 text-center text-white"
+             style="background-image: url('{{ asset('images/hero/hero-1.jpg') }}');">
+        <div class="absolute inset-0 bg-secondary/75"></div>
+        <div class="relative z-10 max-w-3xl mx-auto animar">
+            <svg class="w-10 h-10 text-primary mx-auto mb-6 opacity-60" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+            <blockquote class="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold leading-snug mb-6">
+                Trabajar por la recuperación de los derechos y la dignidad en las cárceles
+            </blockquote>
+            <p class="text-white/70 text-lg">Misión de la Cooperativa Liberté</p>
+        </div>
+    </section>
+
+    {{-- ALIANZAS — marquee --}}
+    <section class="py-10 bg-base-100 border-t border-base-300 overflow-hidden">
+        <h2 class="text-center text-xs font-semibold uppercase tracking-[0.2em] text-base-content/30 mb-6">Alianzas y reconocimientos</h2>
+        <div class="relative">
+            {{-- Fade edges --}}
+            <div class="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-base-100 to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-base-100 to-transparent z-10 pointer-events-none"></div>
+
+            <div class="marquee-track">
+                @php $partners = ['Procuración Penitenciaria de la Nación', 'Universidad Nacional de Mar del Plata', 'INTA', 'Federación Argentina de Cooperativas de Crédito', 'Víctimas por la Paz', 'Procuración Penitenciaria de la Nación', 'Universidad Nacional de Mar del Plata', 'INTA', 'Federación Argentina de Cooperativas de Crédito', 'Víctimas por la Paz']; @endphp
+                @foreach($partners as $partner)
+                    <span class="inline-flex items-center gap-2 px-8 py-3 text-base-content/40 font-medium text-sm whitespace-nowrap">
+                        <svg class="w-4 h-4 text-primary/40" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.403 12.652a3 3 0 0 0 0-5.304 3 3 0 0 0-3.75-3.751 3 3 0 0 0-5.305 0 3 3 0 0 0-3.751 3.75 3 3 0 0 0 0 5.305 3 3 0 0 0 3.75 3.751 3 3 0 0 0 5.305 0 3 3 0 0 0 3.751-3.75Zm-2.546-4.46a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+                        {{ $partner }}
+                    </span>
+                @endforeach
+            </div>
         </div>
     </section>
 
@@ -273,18 +313,29 @@
 @push('scripts')
 <script>
 function heroSlider() {
+    const SLIDE_DURATION = 7000; // ms por slide
+    const PROGRESS_INTERVAL = 30; // ms entre updates del progress
+
     return {
         currentSlide: 0,
+        prevSlide: -1,
         zooming: 0,
-        prevZoomed: -1,       // slide anterior que debe mantener su zoom mientras se desvanece
+        prevZoomed: -1,
         textState: 'hidden',
+        playing: true,
+        progress: 0,
+        parallaxX: 0,
+        parallaxY: 0,
+        touchStartX: 0,
         interval: null,
+        progressTimer: null,
+
         slides: [
             {
                 subtitle: 'Cooperativa Liberté',
                 title: 'Excelencia a Través de la Autogestión',
                 image: '/images/hero/hero-1.jpg',
-                zoomFrom: 1, zoomTo: 1.1,        // zoom IN
+                zoomFrom: 1, zoomTo: 1.1,
                 enterFrom:  'translateX(-250px) rotate(-6deg) scale(0.85)',
                 exitTo:     'translateX(200px) rotate(5deg) scale(0.85)',
                 enterFrom2: 'translateX(-300px) rotate(-8deg) scale(0.85)',
@@ -294,7 +345,7 @@ function heroSlider() {
                 subtitle: 'Producción Profesional',
                 title: 'Hecha con Compromiso y Dignidad',
                 image: '/images/hero/hero-2.jpg',
-                zoomFrom: 1.1, zoomTo: 1,        // zoom OUT
+                zoomFrom: 1.1, zoomTo: 1,
                 enterFrom:  'translateY(-150px) rotate(3deg) scale(0.9)',
                 exitTo:     'translateY(100px) rotate(-2deg) scale(0.9)',
                 enterFrom2: 'translateY(-200px) rotate(4deg) scale(0.9)',
@@ -304,46 +355,121 @@ function heroSlider() {
                 subtitle: 'De Batán para Todo el País',
                 title: 'Más de 200 Miembros en 6 Áreas Productivas',
                 image: '/images/hero/hero-3.jpg',
-                zoomFrom: 1, zoomTo: 1.12,        // zoom IN (un poco más)
+                zoomFrom: 1, zoomTo: 1.12,
                 enterFrom:  'translateX(0) rotate(0deg) scale(0.3)',
                 exitTo:     'translateX(0) rotate(0deg) scale(1.5)',
                 enterFrom2: 'translateX(0) rotate(0deg) scale(0.2)',
                 exitTo2:    'translateX(0) rotate(0deg) scale(1.8)',
             }
         ],
+
         start() {
             requestAnimationFrame(() => {
                 this.zooming = 0;
                 setTimeout(() => { this.textState = 'in'; }, 300);
             });
-            this.interval = setInterval(() => this.next(), 7000);
+            this.startTimer();
         },
+
+        startTimer() {
+            this.progress = 0;
+            clearInterval(this.progressTimer);
+            clearTimeout(this.interval);
+
+            this.progressTimer = setInterval(() => {
+                if (!this.playing) return;
+                this.progress += (PROGRESS_INTERVAL / SLIDE_DURATION) * 100;
+                if (this.progress >= 100) {
+                    this.progress = 100;
+                    clearInterval(this.progressTimer);
+                    this.next();
+                }
+            }, PROGRESS_INTERVAL);
+        },
+
         next() {
             this.changeTo((this.currentSlide + 1) % this.slides.length);
         },
+
         goTo(index) {
             if (index === this.currentSlide) return;
-            clearInterval(this.interval);
             this.changeTo(index);
-            this.interval = setInterval(() => this.next(), 7000);
         },
+
         changeTo(index) {
+            clearInterval(this.progressTimer);
+            this.progress = 0;
+
+            // 1. Texto sale
             this.textState = 'exit';
+
             setTimeout(() => {
-                // La imagen vieja mantiene su zoom mientras se desvanece
+                // 2. Wipe: nueva imagen se revela sobre la vieja
+                this.prevSlide = this.currentSlide;
                 this.prevZoomed = this.currentSlide;
                 this.zooming = -1;
                 this.currentSlide = index;
                 this.textState = 'hidden';
+
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
+                        // 3. Zoom + texto entra
                         this.zooming = index;
                         this.textState = 'in';
-                        // Después de que el crossfade terminó (1s), limpiar
-                        setTimeout(() => { this.prevZoomed = -1; }, 1200);
+
+                        // 4. Después de la transición wipe, limpiar
+                        setTimeout(() => {
+                            this.prevSlide = -1;
+                            this.prevZoomed = -1;
+                        }, 1200);
+
+                        // 5. Reiniciar timer
+                        this.startTimer();
                     });
                 });
             }, 600);
+        },
+
+        togglePlay() {
+            this.playing = !this.playing;
+            if (this.playing) {
+                this.startTimer();
+            } else {
+                clearInterval(this.progressTimer);
+            }
+        },
+
+        pause() {
+            if (this.playing) {
+                clearInterval(this.progressTimer);
+            }
+        },
+
+        resume() {
+            if (this.playing) {
+                this.startTimer();
+            }
+        },
+
+        handleSwipe(e) {
+            const diff = this.touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    this.goTo((this.currentSlide + 1) % this.slides.length);
+                } else {
+                    this.goTo((this.currentSlide - 1 + this.slides.length) % this.slides.length);
+                }
+            }
+        },
+
+        updateParallax(e) {
+            const hero = this.$el;
+            const rect = hero.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            // Movimiento sutil: máximo 15px en cada dirección
+            this.parallaxX = -((e.clientX - centerX) / rect.width) * 15;
+            this.parallaxY = -((e.clientY - centerY) / rect.height) * 10;
         }
     }
 }

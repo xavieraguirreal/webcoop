@@ -8,12 +8,17 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('images/logo-icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo-icon.png') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>[x-cloak] { display: none !important; }</style>
 </head>
 <body class="bg-base-100 text-base-content font-sans antialiased leading-relaxed min-h-screen flex flex-col">
+
+    {{-- Scroll progress bar --}}
+    <div class="scroll-progress" id="scrollProgress"></div>
 
     {{-- Skip link accesible --}}
     <a href="#contenido-principal" class="skip-link">Saltar al contenido</a>
@@ -24,11 +29,8 @@
             x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 50 })"
             :class="scrolled ? 'bg-secondary text-secondary-content shadow-lg' : 'bg-secondary/90 text-secondary-content shadow-md'">
         <div class="navbar-start">
-            <a href="{{ route('home') }}" class="flex items-center gap-3 text-xl font-bold tracking-wide" aria-label="Inicio - Cooperativa Liberté">
-                @if(file_exists(public_path('images/logo-liberte.png')))
-                    <img src="{{ asset('images/logo-liberte.png') }}" alt="" class="h-10 w-auto" aria-hidden="true">
-                @endif
-                <span class="font-serif">Liberté</span>
+            <a href="{{ route('home') }}" class="flex items-center" aria-label="Inicio - Cooperativa Liberté">
+                <img src="{{ asset('images/logo-liberte.png') }}" alt="Cooperativa Liberté" class="h-10 sm:h-12 w-auto">
             </a>
         </div>
 
@@ -127,31 +129,62 @@
         </div>
     </footer>
 
-    {{-- Back to top --}}
+    {{-- Back to top con % --}}
     <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
-            class="back-to-top btn btn-circle btn-primary shadow-lg"
+            class="back-to-top btn btn-circle btn-primary shadow-lg relative"
             id="backToTop"
             aria-label="Volver arriba">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+        {{-- Circular progress ring --}}
+        <svg class="absolute inset-0 -rotate-90 w-full h-full" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="22" fill="none" stroke="white" stroke-width="2" opacity="0.2"/>
+            <circle cx="24" cy="24" r="22" fill="none" stroke="white" stroke-width="2.5"
+                    stroke-dasharray="138.23"
+                    id="backToTopRing"
+                    stroke-linecap="round"/>
+        </svg>
     </button>
 
-    {{-- Scroll animations + back-to-top visibility --}}
+    {{-- Global effects script --}}
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Scroll-in animations con stagger automático
-        const observer = new IntersectionObserver((entries) => {
+        const scrollProgress = document.getElementById('scrollProgress');
+        const backToTop = document.getElementById('backToTop');
+        const backToTopRing = document.getElementById('backToTopRing');
+        const circumference = 2 * Math.PI * 22;
+
+        if (backToTopRing) {
+            backToTopRing.style.strokeDasharray = circumference;
+            backToTopRing.style.strokeDashoffset = circumference;
+        }
+
+        // === Scroll handler (progress bar + back-to-top + ring) ===
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+            if (scrollProgress) scrollProgress.style.width = pct + '%';
+
+            if (backToTop) backToTop.classList.toggle('visible', scrollTop > 400);
+
+            if (backToTopRing) {
+                backToTopRing.style.strokeDashoffset = circumference - (circumference * pct / 100);
+            }
+        }, { passive: true });
+
+        // === Scroll-in animations con stagger ===
+        const animObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Stagger: si el elemento tiene data-delay, esperar ese tiempo
                     const delay = entry.target.dataset.delay || 0;
                     setTimeout(() => entry.target.classList.add('visible'), delay);
-                    observer.unobserve(entry.target);
+                    animObserver.unobserve(entry.target);
                 }
             });
         }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-        document.querySelectorAll('.animar, .animar-left, .animar-scale').forEach((el, i) => {
-            // Auto-stagger para siblings (cards en un grid)
+        document.querySelectorAll('.animar, .animar-left, .animar-scale').forEach((el) => {
             if (!el.dataset.delay && el.parentElement) {
                 const siblings = Array.from(el.parentElement.children).filter(
                     c => c.classList.contains('animar') || c.classList.contains('animar-scale')
@@ -159,16 +192,37 @@
                 const idx = siblings.indexOf(el);
                 if (idx > 0) el.dataset.delay = idx * 120;
             }
-            observer.observe(el);
+            animObserver.observe(el);
         });
 
-        // Back to top visibility
-        const btn = document.getElementById('backToTop');
-        if (btn) {
-            window.addEventListener('scroll', () => {
-                btn.classList.toggle('visible', window.scrollY > 400);
-            }, { passive: true });
-        }
+        // === Image reveal on scroll ===
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('revealed'), 100);
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.image-reveal').forEach(el => revealObserver.observe(el));
+
+        // === Tilt 3D on cards ===
+        document.querySelectorAll('.tilt-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -15;
+                const rotateY = ((x - centerX) / centerX) * 15;
+                card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg)';
+            });
+        });
     });
     </script>
 

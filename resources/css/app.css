@@ -260,3 +260,128 @@
     transform: translateY(0);
     pointer-events: auto;
 }
+
+/*
+ * Scroll progress bar — barra finita en el tope de la página.
+ */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--color-primary);
+    z-index: 100;
+    transition: width 0.1s linear;
+}
+
+/*
+ * Cursor personalizado — solo en desktop, se agranda sobre interactivos.
+ */
+@media (pointer: fine) {
+    .custom-cursor {
+        position: fixed;
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--color-primary);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+        transform: translate(-50%, -50%);
+        mix-blend-mode: difference;
+    }
+    .custom-cursor.hover {
+        width: 50px;
+        height: 50px;
+        background: var(--color-primary);
+        opacity: 0.3;
+        border-color: transparent;
+    }
+}
+@media (pointer: coarse) {
+    .custom-cursor { display: none; }
+}
+
+/*
+ * Gradient text — títulos con gradiente verde del logo.
+ */
+.text-gradient {
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 50%, #a4d65e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/*
+ * Tilt 3D — perspectiva en cards al hover (controlado por JS).
+ */
+.tilt-card {
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease;
+}
+.tilt-card > * {
+    transform: translateZ(20px);
+}
+
+/*
+ * Image reveal — wipe de color que revela la imagen al scrollear.
+ */
+.image-reveal {
+    position: relative;
+    overflow: hidden;
+}
+.image-reveal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-primary);
+    z-index: 2;
+    transform: scaleX(1);
+    transform-origin: right;
+    transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.image-reveal.revealed::before {
+    transform: scaleX(0);
+}
+
+/*
+ * Marquee — scroll continuo de logos/alianzas.
+ */
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 25s linear infinite;
+}
+.marquee-track:hover {
+    animation-play-state: paused;
+}
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+/*
+ * Parallax section — fondo fijo que se mueve más lento (CSS-only).
+ */
+.parallax-bg {
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+}
+/* Fallback para iOS que no soporta background-attachment:fixed */
+@supports (-webkit-touch-callout: none) {
+    .parallax-bg {
+        background-attachment: scroll;
+    }
+}
+
+/*
+ * Wave divider SVG entre secciones.
+ */
+.wave-divider {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: -1px;
+    margin-bottom: -1px;
+}
