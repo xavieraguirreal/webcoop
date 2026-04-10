@@ -6,8 +6,9 @@
     <title>@yield('title', 'Cooperativa Liberté — Cooperativa de Trabajo')</title>
     <meta name="description" content="@yield('meta_description', 'Cooperativa de Trabajo Liberté Ltda. Transformamos realidades a través del trabajo digno y cooperativo.')">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    {{-- Fonts self-hosted en /fonts/ — sin dependencia de Google --}}
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/fraunces-latin.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/intertight-latin.woff2">
     <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('images/logo-icon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/logo-icon.png') }}">
 
