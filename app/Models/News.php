@@ -4,12 +4,16 @@ namespace App\Models;
 
 use App\Services\WatermarkService;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 
 class News extends Model
 {
+    use HasTranslations;
+
+    public array $translatable = ['title', 'excerpt', 'body', 'meta_title', 'meta_description'];
+
     protected static function booted(): void
     {
-        // Aplicar watermark automáticamente cuando se sube una imagen nueva
         static::saved(function (News $news) {
             if ($news->wasChanged('featured_image') && $news->featured_image && !str_starts_with($news->featured_image, 'news-images/')) {
                 WatermarkService::apply($news->featured_image);

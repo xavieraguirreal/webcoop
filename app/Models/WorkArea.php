@@ -4,9 +4,13 @@ namespace App\Models;
 
 use App\Services\WatermarkService;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 
 class WorkArea extends Model
 {
+    use HasTranslations;
+
+    public array $translatable = ['name', 'short_description', 'description'];
     protected static function booted(): void
     {
         static::saved(function (WorkArea $area) {

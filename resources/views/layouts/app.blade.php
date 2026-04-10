@@ -6,6 +6,8 @@
     <title>@yield('title', 'Cooperativa Liberté — Cooperativa de Trabajo')</title>
     <meta name="description" content="@yield('meta_description', 'Cooperativa de Trabajo Liberté Ltda. Transformamos realidades a través del trabajo digno y cooperativo.')">
 
+    {{-- Flag icons para language switcher --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
     {{-- Fonts self-hosted en /fonts/ — sin dependencia de Google --}}
     <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/fraunces-latin.woff2">
     <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/intertight-latin.woff2">
@@ -52,6 +54,11 @@
                     <li><a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Contacto</a></li>
                 </ul>
             </nav>
+        </div>
+
+        {{-- Language switcher --}}
+        <div class="hidden lg:flex ml-2">
+            <x-language-switcher />
         </div>
 
         {{-- Hamburger mobile --}}

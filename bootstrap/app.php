@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // — si lo registráramos solo en "web", el router daría 404 antes de
         // ejecutar el middleware.
         $middleware->prepend(\App\Http\Middleware\RedirectFromJoomla::class);
+        $middleware->append(\App\Http\Middleware\SetLocale::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
