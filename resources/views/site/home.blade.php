@@ -31,7 +31,7 @@
         {{-- Vignette --}}
         <div class="absolute inset-0 z-[3] pointer-events-none" style="box-shadow: inset 0 0 150px rgba(0,0,0,0.4);"></div>
 
-        {{-- Overlay gradiente sutil --}}
+        {{-- Overlay gradiente — incluye oscurecimiento arriba para legibilidad del navbar --}}
         <div class="absolute inset-0 z-[3] bg-gradient-to-t from-black/50 via-black/10 to-black/15 pointer-events-none"></div>
 
         {{-- Flechas de navegación --}}
@@ -89,8 +89,8 @@
 
             {{-- Botones --}}
             <div class="flex gap-4 flex-wrap">
-                <a href="{{ route('work-areas') }}" class="btn btn-accent shadow-lg">Conoce nuestro trabajo</a>
-                <a href="{{ route('page', 'quienes-somos') }}" class="btn glass text-white hover:bg-white/20">Nuestra Identidad</a>
+                <a href="{{ route('work-areas') }}" class="btn btn-accent shadow-lg">{{ t('Conoce nuestro trabajo') }}</a>
+                <a href="{{ route('page', 'quienes-somos') }}" class="btn glass text-white hover:bg-white/20">{{ t('Nuestra Identidad') }}</a>
             </div>
 
             {{-- Dots con barra de progreso --}}
@@ -109,7 +109,7 @@
 
         {{-- Scroll indicator --}}
         <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 text-white/60 flex flex-col items-center gap-2 animate-bounce">
-            <span class="text-xs uppercase tracking-[0.2em] font-medium">Descubrí más</span>
+            <span class="text-xs uppercase tracking-[0.2em] font-medium">{{ t('Descubrí más') }}</span>
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
         </div>
     </section>
@@ -122,21 +122,19 @@
     {{-- BIENVENIDA + FEATURES --}}
     <section class="py-20 px-6 lg:px-8 -mt-1 bg-base-100"
         <div class="max-w-5xl mx-auto">
-            <h2 class="text-4xl font-serif font-bold text-gradient mb-4 animar text-center">Bienvenidos a Liberté</h2>
+            <h2 class="text-4xl font-serif font-bold text-gradient mb-4 animar text-center">{{ t('Bienvenidos a Liberté') }}</h2>
             <div class="w-16 h-1 bg-primary rounded-full mx-auto mb-8"></div>
             <p class="text-lg text-base-content/70 max-w-2xl mx-auto mb-14 animar text-center">
-                Nuestra cooperativa es un emprendimiento <span class="highlight-text">100% autogestionado</span> dentro de la
-                Unidad Penal N.° 15 de Batán. Combinamos el <span class="highlight-text">talento individual</span> con la <span class="highlight-text">fuerza
-                colectiva</span> para producir con calidad y dignidad.
+                {!! t('home.bienvenida_desc') !!}
             </p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
             @php
                 $features = [
-                    ['icon' => 'M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z', 'title' => 'Trabajo en Equipo', 'text' => 'Más de 200 miembros unidos por el cooperativismo, construyendo futuro con sus manos.'],
-                    ['icon' => 'M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z', 'title' => 'Producción Real', 'text' => 'Marroquinería, carpintería, herrería, apicultura, huerta y artesanías de calidad profesional.'],
-                    ['icon' => 'M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z', 'title' => 'Compromiso Social', 'text' => 'Desarrollo sostenible, dignidad e inclusión integrados en nuestro modelo cooperativo.'],
+                    ['icon' => 'M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z', 'title' => t('home.feat1_title'), 'text' => t('home.feat1_text')],
+                    ['icon' => 'M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z', 'title' => t('home.feat2_title'), 'text' => t('home.feat2_text')],
+                    ['icon' => 'M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z', 'title' => t('home.feat3_title'), 'text' => t('home.feat3_text')],
                 ];
             @endphp
 
@@ -167,10 +165,10 @@
             <div class="stats stats-vertical sm:stats-horizontal w-full bg-transparent shadow-none">
                 @php
                     $statItems = [
-                        ['value' => 200, 'suffix' => '+', 'label' => 'Miembros'],
-                        ['value' => 2014, 'suffix' => '', 'label' => 'Desde'],
-                        ['value' => 6, 'suffix' => '', 'label' => 'Áreas Productivas'],
-                        ['value' => 100, 'suffix' => '%', 'label' => 'Autogestionado'],
+                        ['value' => 200, 'suffix' => '+', 'label' => t('home.stat_miembros')],
+                        ['value' => 2014, 'suffix' => '', 'label' => t('home.stat_desde')],
+                        ['value' => 6, 'suffix' => '', 'label' => t('home.stat_areas')],
+                        ['value' => 100, 'suffix' => '%', 'label' => t('home.stat_autogestion')],
                     ];
                 @endphp
                 @foreach($statItems as $s)
@@ -196,22 +194,58 @@
         </div>
     </section>
 
-    {{-- Wave divider stats → áreas --}}
-    <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" fill="var(--color-base-100)">
+    {{-- Wave divider stats → testimonios --}}
+    <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" fill="var(--color-base-200)">
         <path d="M0,30 C360,60 1080,0 1440,20 L1440,60 L0,60 Z"/>
+    </svg>
+
+    {{-- TESTIMONIOS --}}
+    <section class="py-20 px-6 lg:px-8 bg-base-200 -mt-1">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-center text-4xl font-serif font-bold text-gradient mb-4 animar">{{ t('testimonios.titulo') }}</h2>
+            <div class="w-16 h-1 bg-primary rounded-full mx-auto mb-14"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                @php
+                    $testimonials = [
+                        ['quote' => t('testimonios.t1'), 'name' => t('testimonios.t1_nombre'), 'area' => t('testimonios.t1_area')],
+                        ['quote' => t('testimonios.t2'), 'name' => t('testimonios.t2_nombre'), 'area' => t('testimonios.t2_area')],
+                        ['quote' => t('testimonios.t3'), 'name' => t('testimonios.t3_nombre'), 'area' => t('testimonios.t3_area')],
+                    ];
+                @endphp
+
+                @foreach($testimonials as $t)
+                    <div class="card bg-base-100 shadow-sm animar-scale relative overflow-hidden">
+                        {{-- Comilla decorativa --}}
+                        <span class="absolute top-4 left-5 text-7xl font-serif text-primary/10 leading-none select-none pointer-events-none">&ldquo;</span>
+                        <div class="card-body pt-12 pb-8 px-6">
+                            <p class="font-serif italic text-base-content/80 text-base leading-relaxed mb-6">{{ $t['quote'] }}</p>
+                            <div class="w-10 h-0.5 bg-primary rounded-full mb-3"></div>
+                            <p class="text-sm font-bold text-secondary">{{ $t['name'] }}</p>
+                            <p class="text-xs text-primary font-semibold uppercase tracking-wider">{{ $t['area'] }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- Wave divider testimonios → áreas --}}
+    <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" fill="var(--color-base-100)">
+        <path d="M0,20 C480,60 960,0 1440,30 L1440,60 L0,60 Z"/>
     </svg>
 
     {{-- AREAS DE TRABAJO --}}
     <section class="py-20 px-6 lg:px-8 bg-base-100 -mt-1">
         <div class="max-w-5xl mx-auto">
-            <h2 class="text-center text-4xl font-serif font-bold text-gradient mb-4 animar">Áreas de Trabajo</h2>
+            <h2 class="text-center text-4xl font-serif font-bold text-gradient mb-4 animar">{{ t('Áreas de Trabajo') }}</h2>
             <div class="w-16 h-1 bg-primary rounded-full mx-auto mb-14"></div>
 
             @if($workAreas->count())
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($workAreas as $area)
                         <a href="{{ route('work-area.show', $area->slug) }}"
-                           class="card bg-base-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 animar overflow-hidden group">
+                           class="card card-accent-hover bg-base-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 animar overflow-hidden group">
                             @if($area->featured_image)
                                 <figure class="h-48 overflow-hidden">
                                     <img src="{{ asset('storage/' . $area->featured_image) }}" alt="{{ $area->name }}"
@@ -238,9 +272,9 @@
     {{-- ULTIMAS NOTICIAS --}}
     <section class="py-20 px-6 lg:px-8 bg-base-200">
         <div class="max-w-3xl mx-auto">
-            <h2 class="text-center text-4xl font-serif font-bold text-gradient mb-4 animar">Últimas Noticias</h2>
+            <h2 class="text-center text-4xl font-serif font-bold text-gradient mb-4 animar">{{ t('Últimas Noticias') }}</h2>
             <div class="w-16 h-1 bg-primary rounded-full mx-auto mb-4"></div>
-            <p class="text-center text-base-content/50 mb-14 animar">Lo que pasa en la cooperativa.</p>
+            <p class="text-center text-base-content/50 mb-14 animar">{{ t('home.noticias_sub') }}</p>
 
             @if($news->count())
                 {{-- Stacked cards: cada card se desplaza un poco, efecto apilado --}}
@@ -267,7 +301,7 @@
                                     @if($article->excerpt)
                                         <p class="text-base-content/60 text-sm line-clamp-2 mt-1">{{ $article->excerpt }}</p>
                                     @endif
-                                    <span class="text-primary font-semibold text-sm mt-2 inline-block">Leer artículo &rarr;</span>
+                                    <span class="text-primary font-semibold text-sm mt-2 inline-block">{{ t('Leer artículo') }} &rarr;</span>
                                 </div>
                             </div>
                         </a>
@@ -276,10 +310,22 @@
 
                 <div class="text-center mt-10">
                     <a href="{{ route('news.index') }}" class="btn btn-primary btn-wide shadow-md animar">
-                        Ver todas las noticias
+                        {{ t('Ver todas las noticias') }}
                     </a>
                 </div>
             @endif
+        </div>
+    </section>
+
+    {{-- CTA --}}
+    <section class="py-20 px-6 lg:px-8 -mt-1" style="background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <h2 class="text-4xl font-serif font-bold mb-4 animar">{{ t('cta.titulo') }}</h2>
+            <p class="text-lg opacity-90 max-w-2xl mx-auto mb-8 animar">{{ t('cta.texto') }}</p>
+            <div class="flex gap-4 justify-center flex-wrap animar">
+                <a href="{{ route('contact') }}" class="btn btn-accent btn-lg shadow-lg">{{ t('Contacto') }}</a>
+                <a href="{{ route('work-areas') }}" class="btn glass text-white btn-lg hover:bg-white/20">{{ t('Conoce nuestro trabajo') }}</a>
+            </div>
         </div>
     </section>
 
@@ -287,20 +333,21 @@
     <section class="parallax-bg relative py-28 px-6 text-center text-white"
              style="background-image: url('{{ asset('images/hero/hero-1.jpg') }}');">
         <div class="absolute inset-0 bg-secondary/75"></div>
-        <div class="relative z-10 max-w-3xl mx-auto animar"
-             x-data="typingEffect('Trabajar por la recuperación de los derechos y la dignidad en las cárceles')"
-             x-intersect.once="startTyping()">
+        <div class="relative z-10 max-w-3xl mx-auto"
+             x-data="wordReveal()" x-intersect.once="start()">
             <svg class="w-10 h-10 text-primary mx-auto mb-6 opacity-60" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
             <blockquote class="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold leading-snug mb-6">
-                <span x-text="displayText"></span><span class="typing-cursor" x-show="typing"></span>
+                @foreach(explode(' ', t('home.frase')) as $i => $word)
+                    <span class="word-reveal-item inline-block" data-index="{{ $i }}">{{ $word }}</span>
+                @endforeach
             </blockquote>
-            <p class="text-white/70 text-lg" x-show="!typing" x-transition>Misión de la Cooperativa Liberté</p>
+            <p class="word-reveal-author text-white/70 text-lg" style="opacity:0; transition: opacity 0.7s ease;">{{ t('home.frase_autor') }}</p>
         </div>
     </section>
 
     {{-- ALIANZAS — marquee --}}
     <section class="py-10 bg-base-100 border-t border-base-300 overflow-hidden">
-        <h2 class="text-center text-xs font-semibold uppercase tracking-[0.2em] text-base-content/30 mb-6">Alianzas y reconocimientos</h2>
+        <h2 class="text-center text-xs font-semibold uppercase tracking-[0.2em] text-base-content/30 mb-6">{{ t('Alianzas y reconocimientos') }}</h2>
         <div class="relative">
             {{-- Fade edges --}}
             <div class="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-base-100 to-transparent z-10 pointer-events-none"></div>
@@ -342,25 +389,24 @@ function flipCounter(target, suffix) {
     }
 }
 
-function typingEffect(fullText) {
+function wordReveal() {
     return {
-        fullText,
-        displayText: '',
-        typing: false,
-        startTyping() {
-            if (this.typing || this.displayText.length > 0) return;
-            this.typing = true;
-            let i = 0;
-            const type = () => {
-                if (i <= this.fullText.length) {
-                    this.displayText = this.fullText.slice(0, i);
-                    i++;
-                    setTimeout(type, 40 + Math.random() * 30);
-                } else {
-                    this.typing = false;
-                }
-            };
-            type();
+        started: false,
+        start() {
+            if (this.started) return;
+            this.started = true;
+            const words = this.$el.querySelectorAll('.word-reveal-item');
+            words.forEach((word, i) => {
+                setTimeout(() => {
+                    word.style.opacity = '1';
+                    word.style.filter = 'blur(0)';
+                    word.style.transform = 'translateY(0)';
+                }, i * 100);
+            });
+            const author = this.$el.querySelector('.word-reveal-author');
+            if (author) {
+                setTimeout(() => { author.style.opacity = '1'; }, words.length * 100 + 400);
+            }
         }
     }
 }
@@ -385,8 +431,8 @@ function heroSlider() {
 
         slides: [
             {
-                subtitle: 'Cooperativa Liberté',
-                title: 'Excelencia a Través de la Autogestión',
+                subtitle: @json(t('hero.slide1_sub')),
+                title: @json(t('hero.slide1_title')),
                 image: '/images/hero/hero-1.jpg',
                 zoomFrom: 1, zoomTo: 1.1,
                 enterFrom:  'translateX(-250px) rotate(-6deg) scale(0.85)',
@@ -395,8 +441,8 @@ function heroSlider() {
                 exitTo2:    'translateX(250px) rotate(6deg) scale(0.85)',
             },
             {
-                subtitle: 'Producción Profesional',
-                title: 'Hecha con Compromiso y Dignidad',
+                subtitle: @json(t('hero.slide2_sub')),
+                title: @json(t('hero.slide2_title')),
                 image: '/images/hero/hero-2.jpg',
                 zoomFrom: 1.1, zoomTo: 1,
                 enterFrom:  'translateY(-150px) rotate(3deg) scale(0.9)',
@@ -405,14 +451,24 @@ function heroSlider() {
                 exitTo2:    'translateY(120px) rotate(-3deg) scale(0.9)',
             },
             {
-                subtitle: 'De Batán para Todo el País',
-                title: 'Más de 200 Miembros en 6 Áreas Productivas',
+                subtitle: @json(t('hero.slide3_sub')),
+                title: @json(t('hero.slide3_title')),
                 image: '/images/hero/hero-3.jpg',
                 zoomFrom: 1, zoomTo: 1.12,
                 enterFrom:  'translateX(0) rotate(0deg) scale(0.3)',
                 exitTo:     'translateX(0) rotate(0deg) scale(1.5)',
                 enterFrom2: 'translateX(0) rotate(0deg) scale(0.2)',
                 exitTo2:    'translateX(0) rotate(0deg) scale(1.8)',
+            },
+            {
+                subtitle: @json(t('hero.slide4_sub')),
+                title: @json(t('hero.slide4_title')),
+                image: '/images/hero/hero-4.jpg',
+                zoomFrom: 1.08, zoomTo: 1,
+                enterFrom:  'translateX(200px) rotate(4deg) scale(0.9)',
+                exitTo:     'translateX(-200px) rotate(-4deg) scale(0.9)',
+                enterFrom2: 'translateX(250px) rotate(5deg) scale(0.9)',
+                exitTo2:    'translateX(-250px) rotate(-5deg) scale(0.9)',
             }
         ],
 
