@@ -4,10 +4,7 @@
 
 @section('content')
 
-    <section class="bg-secondary text-secondary-content py-16 px-6 text-center">
-        <h1 class="text-4xl lg:text-5xl font-serif font-bold mb-3">{{ isset($category) ? $category->name : 'Noticias' }}</h1>
-        <p class="text-lg opacity-80 max-w-xl mx-auto">Últimas noticias y novedades de nuestra cooperativa</p>
-    </section>
+    <x-page-header :title="isset($category) ? $category->name : t('Noticias')" :subtitle="t('home.noticias_sub')" :breadcrumbs="[t('Noticias') => null]" />
 
     <section class="py-16 px-6 lg:px-8 bg-base-100">
         <div class="max-w-5xl mx-auto">
@@ -47,7 +44,7 @@
                         @if($featured->excerpt)
                             <p class="text-base-content/60 line-clamp-3">{{ $featured->excerpt }}</p>
                         @endif
-                        <span class="text-primary font-semibold text-sm mt-2">Leer artículo completo &rarr;</span>
+                        <span class="text-primary font-semibold text-sm mt-2">{{ t('Leer artículo') }} &rarr;</span>
                     </div>
                 </a>
             @endif
@@ -66,7 +63,7 @@
 
             {{-- No more items --}}
             <div id="newsEnd" class="text-center py-10 hidden">
-                <p class="text-base-content/40">No hay más noticias</p>
+                <p class="text-base-content/40">{{ t('No hay más noticias') }}</p>
             </div>
 
             {{-- Hidden pagination data for JS --}}

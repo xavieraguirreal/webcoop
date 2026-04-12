@@ -15,3 +15,5 @@ Route::get('/areas-de-trabajo', [SiteController::class, 'workAreas'])->name('wor
 Route::get('/areas/{slug}', [SiteController::class, 'workAreaShow'])->name('work-area.show');
 
 Route::get('/contacto', [SiteController::class, 'contact'])->name('contact');
+
+Route::get('/idioma', fn () => view('site.idioma'))->name('idioma');

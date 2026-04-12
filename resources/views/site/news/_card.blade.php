@@ -1,5 +1,5 @@
 <a href="{{ route('news.show', $article->slug) }}"
-   class="card bg-base-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden group">
+   class="card card-accent-hover bg-base-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden group">
     @if($article->featured_image)
         <figure class="h-48 overflow-hidden hover-magnify">
             <img src="{{ asset('storage/' . $article->featured_image) }}" alt=""

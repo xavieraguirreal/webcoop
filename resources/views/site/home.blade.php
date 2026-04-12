@@ -241,31 +241,51 @@
             <h2 class="text-center text-4xl font-serif font-bold text-gradient mb-4 animar">{{ t('Áreas de Trabajo') }}</h2>
             <div class="w-16 h-1 bg-primary rounded-full mx-auto mb-14"></div>
 
-            @if($workAreas->count())
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach($workAreas as $area)
-                        <a href="{{ route('work-area.show', $area->slug) }}"
-                           class="card card-accent-hover bg-base-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 animar overflow-hidden group">
-                            @if($area->featured_image)
-                                <figure class="h-48 overflow-hidden">
-                                    <img src="{{ asset('storage/' . $area->featured_image) }}" alt="{{ $area->name }}"
-                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
-                                </figure>
-                            @else
-                                <figure class="h-48 bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center">
-                                    <span class="text-primary/40 text-6xl font-serif">{{ mb_substr($area->name, 0, 1) }}</span>
-                                </figure>
-                            @endif
-                            <div class="card-body items-center text-center p-6">
-                                <h3 class="card-title text-secondary font-serif">{{ $area->name }}</h3>
-                                @if($area->short_description)
-                                    <p class="text-base-content/60 text-sm">{{ $area->short_description }}</p>
-                                @endif
+            @php
+                $groupCards = [
+                    'talleres-productivos' => [
+                        'icon' => 'M11.42 15.17l-4.655-5.653a.61.61 0 010-.948l4.655-5.653a.61.61 0 01.949 0l4.655 5.653a.61.61 0 010 .948l-4.655 5.653a.61.61 0 01-.949 0zM21.75 12a9.75 9.75 0 11-19.5 0 9.75 9.75 0 0119.5 0z',
+                        'bg' => 'linear-gradient(135deg, #d97706, #92400e)',
+                    ],
+                    'produccion-agropecuaria' => [
+                        'icon' => 'M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z',
+                        'bg' => 'linear-gradient(135deg, #059669, #065f46)',
+                    ],
+                    'educacion-formacion' => [
+                        'icon' => 'M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5',
+                        'bg' => 'linear-gradient(135deg, #2563eb, #1e40af)',
+                    ],
+                    'bienestar-comunidad' => [
+                        'icon' => 'M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z',
+                        'bg' => 'linear-gradient(135deg, #e11d48, #9f1239)',
+                    ],
+                ];
+                $groupedHome = $workAreas->groupBy('group');
+            @endphp
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                @foreach(\App\Models\WorkArea::GROUPS as $gKey => $gLabel)
+                    @php $card = $groupCards[$gKey]; $count = isset($groupedHome[$gKey]) ? $groupedHome[$gKey]->count() : 0; @endphp
+                    <a href="{{ route('work-areas') }}#{{ $gKey }}"
+                       class="card card-accent-hover bg-base-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animar group">
+                        <div class="card-body flex-row items-center gap-5 p-6">
+                            <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg shrink-0 group-hover:scale-110 transition-transform duration-300"
+                                 style="background: {{ $card['bg'] }}">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $card['icon'] }}"/>
+                                </svg>
                             </div>
-                        </a>
-                    @endforeach
-                </div>
-            @endif
+                            <div>
+                                <h3 class="card-title text-secondary font-serif text-xl">{{ t($gLabel) }}</h3>
+                                <p class="text-base-content/50 text-sm">{{ $count }} {{ t($count === 1 ? 'área' : 'áreas') }}</p>
+                            </div>
+                            <svg class="w-5 h-5 text-primary ml-auto opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
         </div>
     </section>
 

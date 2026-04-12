@@ -20,8 +20,15 @@ class WorkArea extends Model
         });
     }
 
+    public const GROUPS = [
+        'talleres-productivos' => 'Talleres Productivos',
+        'produccion-agropecuaria' => 'Producción Agropecuaria',
+        'educacion-formacion' => 'Educación y Formación',
+        'bienestar-comunidad' => 'Bienestar y Comunidad',
+    ];
+
     protected $fillable = [
-        'name', 'slug', 'short_description', 'description',
+        'name', 'slug', 'group', 'short_description', 'description',
         'featured_image', 'icon', 'is_active', 'sort_order',
     ];
 

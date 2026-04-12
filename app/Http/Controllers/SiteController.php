@@ -62,7 +62,8 @@ class SiteController extends Controller
     public function workAreas()
     {
         $areas = WorkArea::where('is_active', true)->orderBy('sort_order')->get();
-        return view('site.work-areas', compact('areas'));
+        $grouped = $areas->groupBy('group');
+        return view('site.work-areas', compact('areas', 'grouped'));
     }
 
     public function workAreaShow($slug)

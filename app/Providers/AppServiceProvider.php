@@ -21,5 +21,6 @@ class AppServiceProvider extends ServiceProvider
     {
         // Fechas en español (Carbon)
         \Carbon\Carbon::setLocale('es');
+
     }
 }

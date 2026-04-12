@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es-AR" data-theme="liberte">
+<html lang="{{ app()->getLocale() }}" data-theme="liberte">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,13 +30,13 @@
     <div class="scroll-progress" id="scrollProgress"></div>
 
     {{-- Skip link accesible --}}
-    <a href="#contenido-principal" class="skip-link">Saltar al contenido</a>
+    <a href="#contenido-principal" class="skip-link">{{ t('Saltar al contenido') }}</a>
 
     {{-- HEADER --}}
     <header class="navbar sticky top-0 z-50 px-4 lg:px-8 transition-all duration-300"
             x-data="{ open: false, scrolled: false }"
             x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 50 })"
-            :class="scrolled ? 'bg-secondary text-secondary-content shadow-lg' : 'bg-secondary/90 text-secondary-content shadow-md'">
+            :class="scrolled ? 'bg-secondary text-secondary-content shadow-lg' : 'bg-secondary/90 text-secondary-content shadow-md'"
         <div class="navbar-start">
             <a href="{{ route('home') }}" class="flex items-center" aria-label="Inicio - Cooperativa Liberté">
                 <img src="{{ asset('images/logo-liberte.png') }}" alt="Cooperativa Liberté" class="h-10 sm:h-12 w-auto">
@@ -47,11 +47,11 @@
         <div class="navbar-end hidden lg:flex">
             <nav aria-label="Navegación principal">
                 <ul class="menu menu-horizontal gap-1 text-sm font-medium">
-                    <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Inicio</a></li>
-                    <li><a href="{{ route('page', 'quienes-somos') }}" class="{{ request()->is('nosotros/*') ? 'active' : '' }}">Nosotros</a></li>
-                    <li><a href="{{ route('work-areas') }}" class="{{ request()->routeIs('work-areas*', 'work-area*') ? 'active' : '' }}">Áreas de Trabajo</a></li>
-                    <li><a href="{{ route('news.index') }}" class="{{ request()->routeIs('news*') ? 'active' : '' }}">Noticias</a></li>
-                    <li><a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Contacto</a></li>
+                    <li><a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">{{ t('Inicio') }}</a></li>
+                    <li><a href="{{ route('page', 'quienes-somos') }}" class="nav-link {{ request()->is('nosotros/*') ? 'active' : '' }}">{{ t('Nosotros') }}</a></li>
+                    <li><a href="{{ route('work-areas') }}" class="nav-link {{ request()->routeIs('work-areas*', 'work-area*') ? 'active' : '' }}">{{ t('Áreas de Trabajo') }}</a></li>
+                    <li><a href="{{ route('news.index') }}" class="nav-link {{ request()->routeIs('news*') ? 'active' : '' }}">{{ t('Noticias') }}</a></li>
+                    <li><a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">{{ t('Contacto') }}</a></li>
                 </ul>
             </nav>
         </div>
@@ -69,17 +69,41 @@
             </button>
         </div>
 
-        {{-- Mobile nav --}}
-        <div x-show="open" x-cloak x-transition.opacity class="absolute top-full left-0 right-0 bg-secondary border-t border-secondary-content/10 shadow-lg lg:hidden z-40">
+        {{-- Mobile nav — fullscreen overlay --}}
+        <div x-show="open" x-cloak
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-x-full"
+             x-transition:enter-end="opacity-100 translate-x-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-x-0"
+             x-transition:leave-end="opacity-0 translate-x-full"
+             class="fixed inset-0 bg-secondary/95 backdrop-blur-md lg:hidden z-40 flex flex-col justify-center items-center">
+            {{-- Close button --}}
+            <button @click="open = false" class="absolute top-5 right-5 btn btn-ghost btn-circle text-white" aria-label="Cerrar menú">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+
+            {{-- Logo --}}
+            <img src="{{ asset('images/logo-liberte.png') }}" alt="Liberté" class="h-14 w-auto mb-10 opacity-80">
+
             <nav aria-label="Navegación móvil">
-                <ul class="menu menu-vertical p-4 text-secondary-content text-base gap-1">
-                    <li><a href="{{ route('home') }}">Inicio</a></li>
-                    <li><a href="{{ route('page', 'quienes-somos') }}">Nosotros</a></li>
-                    <li><a href="{{ route('work-areas') }}">Áreas de Trabajo</a></li>
-                    <li><a href="{{ route('news.index') }}">Noticias</a></li>
-                    <li><a href="{{ route('contact') }}">Contacto</a></li>
+                <ul class="flex flex-col items-center gap-6 text-white text-xl font-serif">
+                    <li><a href="{{ route('home') }}" @click="open = false" class="hover:text-primary transition-colors">{{ t('Inicio') }}</a></li>
+                    <li><a href="{{ route('page', 'quienes-somos') }}" @click="open = false" class="hover:text-primary transition-colors">{{ t('Nosotros') }}</a></li>
+                    <li><a href="{{ route('work-areas') }}" @click="open = false" class="hover:text-primary transition-colors">{{ t('Áreas de Trabajo') }}</a></li>
+                    <li><a href="{{ route('news.index') }}" @click="open = false" class="hover:text-primary transition-colors">{{ t('Noticias') }}</a></li>
+                    <li><a href="{{ route('contact') }}" @click="open = false" class="hover:text-primary transition-colors">{{ t('Contacto') }}</a></li>
                 </ul>
             </nav>
+
+            {{-- Language selector --}}
+            <div class="mt-10">
+                @php $mobileCountry = config('translatable.locale_country_map')[config('app.regional_locale', 'es_AR')] ?? ['code' => 'ar', 'name' => 'Argentina']; @endphp
+                <a href="{{ route('idioma') }}" class="btn btn-ghost text-white/70 hover:text-white gap-2">
+                    <span class="fi fi-{{ $mobileCountry['code'] }} rounded-sm" style="width:20px;height:14px;display:inline-block;background-size:cover;"></span>
+                    {{ $mobileCountry['name'] }}
+                </a>
+            </div>
         </div>
     </header>
 
@@ -96,9 +120,7 @@
                 <div class="md:col-span-2">
                     <span class="text-xl font-bold font-serif text-white">Liberté</span>
                     <p class="mt-4 text-sm leading-relaxed opacity-80">
-                        Cooperativa de Trabajo Liberté Ltda. Un emprendimiento 100% autogestionado
-                        dentro de la Unidad Penal N.° 15 de Batán. Transformamos realidades
-                        a través del trabajo digno y el compromiso colectivo.
+                        {{ t('footer.desc') }}
                     </p>
                     <div class="mt-6 flex gap-3">
                         <a href="#" class="btn btn-circle btn-ghost btn-sm opacity-70 hover:opacity-100" aria-label="Instagram">
@@ -112,25 +134,25 @@
 
                 {{-- Nav footer --}}
                 <div>
-                    <h3 class="text-primary font-semibold mb-4 text-sm uppercase tracking-wider">Navegación</h3>
+                    <h3 class="text-primary font-semibold mb-4 text-sm uppercase tracking-wider">{{ t('Navegación') }}</h3>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('home') }}" class="opacity-70 hover:opacity-100 hover:text-primary transition">Inicio</a></li>
-                        <li><a href="{{ route('page', 'quienes-somos') }}" class="opacity-70 hover:opacity-100 hover:text-primary transition">Nosotros</a></li>
-                        <li><a href="{{ route('work-areas') }}" class="opacity-70 hover:opacity-100 hover:text-primary transition">Áreas de trabajo</a></li>
-                        <li><a href="{{ route('news.index') }}" class="opacity-70 hover:opacity-100 hover:text-primary transition">Noticias</a></li>
-                        <li><a href="{{ route('contact') }}" class="opacity-70 hover:opacity-100 hover:text-primary transition">Contacto</a></li>
+                        <li><a href="{{ route('home') }}" class="opacity-70 hover:opacity-100 hover:text-primary transition">{{ t('Inicio') }}</a></li>
+                        <li><a href="{{ route('page', 'quienes-somos') }}" class="opacity-70 hover:opacity-100 hover:text-primary transition">{{ t('Nosotros') }}</a></li>
+                        <li><a href="{{ route('work-areas') }}" class="opacity-70 hover:opacity-100 hover:text-primary transition">{{ t('Áreas de Trabajo') }}</a></li>
+                        <li><a href="{{ route('news.index') }}" class="opacity-70 hover:opacity-100 hover:text-primary transition">{{ t('Noticias') }}</a></li>
+                        <li><a href="{{ route('contact') }}" class="opacity-70 hover:opacity-100 hover:text-primary transition">{{ t('Contacto') }}</a></li>
                     </ul>
                 </div>
 
                 {{-- Contacto --}}
                 <div>
-                    <h3 class="text-primary font-semibold mb-4 text-sm uppercase tracking-wider">Contacto</h3>
+                    <h3 class="text-primary font-semibold mb-4 text-sm uppercase tracking-wider">{{ t('Contacto') }}</h3>
                     <ul class="space-y-2 text-sm opacity-70">
                         <li>Unidad Penal N.° 15 — Batán</li>
                         <li>Mar del Plata, Buenos Aires</li>
                         <li>Argentina</li>
                     </ul>
-                    <h3 class="text-primary font-semibold mb-3 mt-6 text-sm uppercase tracking-wider">Sitios hermanos</h3>
+                    <h3 class="text-primary font-semibold mb-3 mt-6 text-sm uppercase tracking-wider">{{ t('Sitios hermanos') }}</h3>
                     <ul class="space-y-2 text-sm">
                         <li><a href="#" class="opacity-70 hover:opacity-100 hover:text-primary transition">Taller Solidario Liberté</a></li>
                     </ul>
@@ -138,7 +160,7 @@
             </div>
 
             <div class="mt-12 pt-6 border-t border-neutral-content/10 text-center text-sm opacity-50">
-                &copy; {{ date('Y') }} Cooperativa de Trabajo Liberté Ltda. Todos los derechos reservados.
+                &copy; {{ date('Y') }} Cooperativa de Trabajo Liberté Ltda. {{ t('Todos los derechos reservados') }}.
             </div>
         </div>
     </footer>
@@ -156,7 +178,7 @@
     <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
             class="back-to-top btn btn-circle btn-primary shadow-lg relative"
             id="backToTop"
-            aria-label="Volver arriba">
+            aria-label="{{ t('Volver arriba') }}">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
         {{-- Circular progress ring --}}
         <svg class="absolute inset-0 -rotate-90 w-full h-full" viewBox="0 0 48 48">
@@ -200,10 +222,10 @@
         const loader = document.getElementById('loadingScreen');
         if (loader) {
             window.addEventListener('load', () => {
-                setTimeout(() => loader.classList.add('loaded'), 800);
+                loader.classList.add('loaded');
             });
-            // Fallback: si tarda más de 3s, cerrar igual
-            setTimeout(() => loader.classList.add('loaded'), 3000);
+            // Fallback: si tarda más de 2s, cerrar igual
+            setTimeout(() => loader.classList.add('loaded'), 2000);
         }
 
         // === Scroll-in animations con stagger ===
@@ -217,7 +239,7 @@
             });
         }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-        document.querySelectorAll('.animar, .animar-left, .animar-scale').forEach((el) => {
+        document.querySelectorAll('.animar, .animar-left, .animar-scale, .animar-right').forEach((el) => {
             if (!el.dataset.delay && el.parentElement) {
                 const siblings = Array.from(el.parentElement.children).filter(
                     c => c.classList.contains('animar') || c.classList.contains('animar-scale')
@@ -269,6 +291,10 @@
         });
     });
     </script>
+
+    {{-- Geo-refinamiento de idioma regional --}}
+    <script>var COOP_LOCALE='{{ config('app.regional_locale', 'es_AR') }}';</script>
+    <script src="{{ asset('js/i18n-detect.js') }}" defer></script>
 
     @stack('scripts')
 </body>

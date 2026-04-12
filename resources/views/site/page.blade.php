@@ -5,10 +5,7 @@
 
 @section('content')
 
-    {{-- Page header --}}
-    <section class="bg-secondary text-secondary-content py-16 px-6 text-center">
-        <h1 class="text-4xl lg:text-5xl font-serif font-bold">{{ $page->title }}</h1>
-    </section>
+    <x-page-header :title="$page->title" :breadcrumbs="[t('Nosotros') => null]" />
 
     <section class="py-16 px-6 lg:px-8 bg-base-100">
         <div class="max-w-4xl mx-auto flex flex-col lg:flex-row items-start gap-12">

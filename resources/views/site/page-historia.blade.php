@@ -4,9 +4,7 @@
 
 @section('content')
 
-    <section class="bg-secondary text-secondary-content py-16 px-6 text-center">
-        <h1 class="text-4xl lg:text-5xl font-serif font-bold">{{ $page->title }}</h1>
-    </section>
+    <x-page-header :title="$page->title" :breadcrumbs="[t('Nosotros') => route('page', 'quienes-somos'), $page->title => null]" />
 
     {{-- Timeline animada --}}
     <section class="py-20 px-6 lg:px-8 bg-base-100">

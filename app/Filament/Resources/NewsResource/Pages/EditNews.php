@@ -23,58 +23,68 @@ class EditNews extends EditRecord
                 ->label('Traducir con IA')
                 ->icon('heroicon-o-language')
                 ->color('warning')
-                ->form([
-                    \Filament\Forms\Components\CheckboxList::make('target_locales')
-                        ->label('Traducir a:')
-                        ->options(
-                            collect(config('translatable.locale_names', []))
-                                ->except('es')
-                                ->toArray()
-                        )
-                        ->columns(2)
-                        ->required(),
-                ])
-                ->action(function (array $data) {
+                ->requiresConfirmation()
+                ->modalHeading(fn () => 'Traducir artículo a ' . config("translatable.locale_names.{$this->activeLocale}", $this->activeLocale))
+                ->modalDescription('Se traducirán título, extracto, contenido y meta tags del español. Las traducciones existentes se sobrescribirán.')
+                ->action(function () {
+                    $locale = $this->activeLocale;
                     $record = $this->getRecord();
                     $fields = ['title', 'excerpt', 'body', 'meta_title', 'meta_description'];
 
-                    foreach ($data['target_locales'] as $locale) {
-                        try {
-                            $sourceTexts = [];
-                            foreach ($fields as $field) {
-                                $sourceTexts[$field] = $record->getTranslation($field, 'es', false) ?? '';
-                            }
-
-                            $translations = TranslationService::translateFields($sourceTexts, 'es', $locale);
-
-                            foreach ($translations as $field => $value) {
-                                if (!empty($value)) {
-                                    $record->setTranslation($field, $locale, $value);
-                                }
-                            }
-
-                            $record->save();
-
-                            Notification::make()
-                                ->title("Traducido a " . config("translatable.locale_names.{$locale}", $locale))
-                                ->success()
-                                ->send();
-
-                        } catch (\Throwable $e) {
-                            Notification::make()
-                                ->title("Error al traducir a {$locale}")
-                                ->body($e->getMessage())
-                                ->danger()
-                                ->send();
+                    try {
+                        $sourceTexts = [];
+                        foreach ($fields as $field) {
+                            $sourceTexts[$field] = $record->getTranslation($field, 'es', false) ?? '';
                         }
+
+                        $translations = TranslationService::translateFields($sourceTexts, 'es', $locale);
+
+                        $formData = $this->data;
+                        foreach ($translations as $field => $value) {
+                            if (!empty($value)) {
+                                $formData[$field] = $value;
+                            }
+                        }
+                        $this->data = $formData;
+
+                        Notification::make()
+                            ->title("Traducido a " . config("translatable.locale_names.{$locale}", $locale))
+                            ->body('Revisá los campos y guardá cuando estés conforme.')
+                            ->success()
+                            ->send();
+
+                    } catch (\Throwable $e) {
+                        Notification::make()
+                            ->title("Error al traducir a {$locale}")
+                            ->body($e->getMessage())
+                            ->danger()
+                            ->send();
                     }
                 })
-                ->requiresConfirmation()
-                ->modalHeading('Traducir artículo con IA')
-                ->modalDescription('Se traducirán título, extracto, contenido y meta tags del español a los idiomas seleccionados. Las traducciones existentes se sobrescribirán.')
-                ->visible(fn () => config('services.openai.api_key')),
+                ->visible(fn () => config('services.openai.api_key') && $this->activeLocale !== 'es'),
 
             Actions\DeleteAction::make(),
+        ];
+    }
+
+    protected function getSaveFormAction(): \Filament\Actions\Action
+    {
+        return parent::getSaveFormAction()
+            ->label('Guardar cambios');
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getSaveFormAction(),
+            Actions\Action::make('saveAndClose')
+                ->label('Guardar y cerrar')
+                ->color('success')
+                ->action(function () {
+                    $this->save();
+                    $this->redirect($this->getResource()::getUrl('index'));
+                }),
+            $this->getCancelFormAction(),
         ];
     }
 }

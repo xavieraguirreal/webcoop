@@ -131,6 +131,9 @@ class NewsResource extends Resource
                         'draft' => 'Borrador',
                         'published' => 'Publicado',
                     }),
+                Tables\Columns\ViewColumn::make('translations_available')
+                    ->label('Idiomas')
+                    ->view('filament.columns.translation-flags'),
                 Tables\Columns\IconColumn::make('is_featured')
                     ->label('Dest.')
                     ->boolean(),

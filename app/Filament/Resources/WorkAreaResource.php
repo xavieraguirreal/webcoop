@@ -35,6 +35,11 @@ class WorkAreaResource extends Resource
                         Forms\Components\TextInput::make('slug')
                             ->required()
                             ->unique(ignoreRecord: true),
+                        Forms\Components\Select::make('group')
+                            ->label('Categoría')
+                            ->options(WorkArea::GROUPS)
+                            ->required()
+                            ->default('talleres-productivos'),
                         Forms\Components\Textarea::make('short_description')
                             ->label('Descripción corta')
                             ->rows(2)
@@ -78,6 +83,10 @@ class WorkAreaResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('group')
+                    ->label('Categoría')
+                    ->formatStateUsing(fn (string $state) => WorkArea::GROUPS[$state] ?? $state)
+                    ->badge(),
                 Tables\Columns\TextColumn::make('short_description')
                     ->label('Descripción')
                     ->limit(60),
